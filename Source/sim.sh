@@ -6,6 +6,18 @@ start_process() {
     echo "Prozess $1 gestartet (PID: $!)."
 }
 
+
+# Function to cleanup
+cleanup() {
+    echo "Terminating all child processes..."
+    pkill -TERM -P $$
+    exit 0
+}
+
+# Trap Ctrl+C (SIGINT) and call the cleanup function
+trap cleanup SIGINT
+
+
 # Überwache die Prozess-IDs in einer Endlosschleife
 while true; do
     # Überwache Sensorprozess
