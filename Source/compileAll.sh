@@ -7,3 +7,4 @@
 
 # ersteinmal manuell alle dateien reinschreiben, da das bash output script mit -lncurses compiliert werden muss
 gcc "GPSSensor.c" -o "GPSSensor.out"
+gcc "Controler.c" -o "Controler.out"

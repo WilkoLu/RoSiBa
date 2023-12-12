@@ -5,11 +5,6 @@
 #define MAX_X 80
 #define MAX_Y 24
 
-// struct SharedMemory {
-//     int Grid[MAX_Y][MAX_X];
-//     struct PackageData MyPackageData;
-//     struct Position2D GPSPosition;
-// };
 
 struct Position2D
 {
