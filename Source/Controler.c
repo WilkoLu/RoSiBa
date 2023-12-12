@@ -111,8 +111,14 @@ int main()
         {
             nextDirection = LEFT;
         }
+        else 
+        {
+            /* code */
+            // send drop befehl
+            sleep(2);
+            continue;
+        }
         
-
         // Senden Sie die generierten Steuerbefehle an die Nachrichtenwarteschlange
         sendDirectionMessage(msg_queue_id, 8, nextDirection);
 

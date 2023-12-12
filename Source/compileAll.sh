@@ -9,3 +9,5 @@
 gcc "GPSSensor.c" -o "GPSSensor.out"
 gcc "Controler.c" -o "Controler.out"
 gcc "Motor.c" -o "Motor.out"
+
+gcc "DroneAnimation.c" -o "DroneAnimation.out" -lncurses
