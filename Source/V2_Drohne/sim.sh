@@ -21,21 +21,21 @@ trap cleanup SIGINT
 # Überwache die Prozess-IDs in einer Endlosschleife
 while true; do
     # Überwache Sensorprozess
-    if ! pgrep -x "sensor" > /dev/null; then
+    if ! pgrep -x "sensor.out" > /dev/null; then
         echo "Sensorprozess wurde beendet. Starte neu..."
-        start_process sensor
+        start_process sensor.out
     fi
 
     # Überwache Aktuatorprozess
-    if ! pgrep -x "actuator" > /dev/null; then
+    if ! pgrep -x "actuator.out" > /dev/null; then
         echo "Aktuatorprozess wurde beendet. Starte neu..."
-        start_process actuator
+        start_process actuator.out
     fi
 
     # Überwache Steuerungsprozess
-    if ! pgrep -x "controller" > /dev/null; then
+    if ! pgrep -x "controller.out" > /dev/null; then
         echo "Steuerungsprozess wurde beendet. Starte neu..."
-        start_process controller
+        start_process controller.out
     fi
 
     sleep 5 # Überwachungsintervall (in Sekunden)
