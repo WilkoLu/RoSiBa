@@ -20,6 +20,12 @@ void ReceiveGPSPosMessage(int msg_queue_id, long msg_type, struct Position2D* gp
     gpsPos->YPos = msg.GPSPosition.YPos;
 }
 
+void sendDirectionMessage(int msg_queue_id, long msg_type, enum Direction direction) {
+    struct DirectionMessage msg;
+    msg.MsgType = msg_type;
+    msg.FlyDirection = direction;
+    msgsnd(msg_queue_id, &msg, sizeof(msg.FlyDirection), 0);
+}
 
 int main()
 {
@@ -84,7 +90,7 @@ int main()
         ReceiveGPSPosMessage(msg_queue_id, 1, &sensorGPSPos);
 
         // Hier könnten Sie die Pfadplanungslogik implementieren
-        printf("[C]: Controllerprozess empfing GPS Sensordaten: %d %d\n", sensorGPSPos.XPos, sensorGPSPos.YPos);
+        printf("[C] Controllerprozess empfing GPS Sensordaten: %d %d\n", sensorGPSPos.XPos, sensorGPSPos.YPos);
 
         // Hier generieren Sie Steuerbefehle basierend auf den bewerteten Daten
         // Beispiel: Einfache Steuerbefehlsgenerierung
@@ -108,7 +114,7 @@ int main()
         
 
         // Senden Sie die generierten Steuerbefehle an die Nachrichtenwarteschlange
-        // send_message(msg_queue_id, 2, control_command);
+        sendDirectionMessage(msg_queue_id, 8, nextDirection);
 
         sleep(2); // Beispiel: Intervall zwischen Pfadbewertungen und Steuerbefehlsgenerierung (in Sekunden)
     }
