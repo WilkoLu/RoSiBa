@@ -31,14 +31,14 @@ int main()
     // Shared Memory ID abrufen
     int shmID = shmget(key, sizeof(struct SharedMemory), 0644);
     if (shmID == -1) {
-        perror("shmget");
+        perror("[M] shmget");
         exit(EXIT_FAILURE);
     }
 
     // Shared Memory anhängen
     struct SharedMemory *sharedData = shmat(shmID, NULL, 0);
     if (sharedData == (void *)-1) {
-        perror("shmat");
+        perror("[M] shmat");
         exit(EXIT_FAILURE);
     }
 
@@ -46,7 +46,7 @@ int main()
     // Anschließen an die Nachrichtenwarteschlange
     int msg_queue_id = msgget(7681, 0666 | IPC_CREAT);
     if (msg_queue_id == -1) {
-        perror("Fehler beim Anschließen an die Nachrichtenwarteschlange");
+        perror("[M] Fehler beim Anschließen an die Nachrichtenwarteschlange");
         exit(EXIT_FAILURE);
     }
 

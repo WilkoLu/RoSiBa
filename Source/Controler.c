@@ -75,7 +75,7 @@ int main()
     // Anschließen an die Nachrichtenwarteschlange
     int msg_queue_id = msgget(7681, 0666 | IPC_CREAT);
     if (msg_queue_id == -1) {
-        perror("Fehler beim Anschließen an die Nachrichtenwarteschlange");
+        perror("[C] Fehler beim Anschließen an die Nachrichtenwarteschlange");
         exit(EXIT_FAILURE);
     }
 
@@ -123,7 +123,7 @@ int main()
 
     // Aufräumarbeiten (normalerweise wird dies nicht erreicht)
     if (msgctl(msg_queue_id, IPC_RMID, NULL) == -1) {
-        perror("Fehler beim Löschen der Nachrichtenwarteschlange");
+        perror("[C] Fehler beim Löschen der Nachrichtenwarteschlange");
         exit(EXIT_FAILURE);
     }
 

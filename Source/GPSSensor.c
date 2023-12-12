@@ -22,21 +22,21 @@ int main()
     // Schlüssel generieren (muss derselbe wie im anderen Programm sein)
     key_t key = ftok("/tmp", 's');
     if (key == -1) {
-        perror("ftok");
+        perror("[G] ftok");
         exit(EXIT_FAILURE);
     }
 
     // Shared Memory ID abrufen
     int shmID = shmget(key, sizeof(struct SharedMemory), 0644);
     if (shmID == -1) {
-        perror("shmget");
+        perror("[G] shmget");
         exit(EXIT_FAILURE);
     }
 
     // Shared Memory anhängen
     struct SharedMemory *sharedData = shmat(shmID, NULL, 0);
     if (sharedData == (void *)-1) {
-        perror("shmat");
+        perror("[G] shmat");
         exit(EXIT_FAILURE);
     }
 
@@ -44,7 +44,7 @@ int main()
     int msg_queue_id = msgget(7681, 0666 | IPC_CREAT);
     if (msg_queue_id == -1)
     {
-        perror("Fehler beim Erstellen der Nachrichtenwarteschlange");
+        perror("[G] Fehler beim Erstellen der Nachrichtenwarteschlange");
         exit(EXIT_FAILURE);
     }
 
@@ -66,7 +66,7 @@ int main()
 
     // Aufräumarbeiten (normalerweise wird dies nicht erreicht)
     if (msgctl(msg_queue_id, IPC_RMID, NULL) == -1) {
-        perror("Fehler beim Löschen der Nachrichtenwarteschlange");
+        perror("[G] Fehler beim Löschen der Nachrichtenwarteschlange");
         exit(EXIT_FAILURE);
     }
 
