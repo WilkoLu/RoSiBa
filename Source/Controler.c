@@ -27,6 +27,13 @@ void sendDirectionMessage(int msg_queue_id, long msg_type, enum Direction direct
     msgsnd(msg_queue_id, &msg, sizeof(msg.FlyDirection), 0);
 }
 
+void sendDropnMessage(int msg_queue_id, long msg_type, bool drop) {
+    struct DropMessage msg;
+    msg.MsgType = msg_type;
+    msg.DropPackage = drop;
+    msgsnd(msg_queue_id, &msg, sizeof(msg.DropPackage), 0);
+}
+
 int main()
 {
     int targetPointX = 11;
@@ -113,9 +120,15 @@ int main()
         }
         else 
         {
-            /* code */
             // send drop befehl
-            sleep(2);
+            sendDropnMessage(msg_queue_id, DROPMSGTYPE, true);
+
+            sleep(12);
+
+            // ToDo: new target point
+            targetPointX = 0;
+            targetPointY = 0;
+
             continue;
         }
         

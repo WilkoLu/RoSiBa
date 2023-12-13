@@ -39,5 +39,11 @@ while true; do
         start_process Motor.out
     fi
 
+    # Überwache Aktuatorprozess
+    if ! pgrep -x "Droper.out" > /dev/null; then
+        echo "[T] Droperprozess wurde beendet. Starte neu..."
+        start_process Droper.out
+    fi
+
     sleep 5 # Überwachungsintervall (in Sekunden)
 done

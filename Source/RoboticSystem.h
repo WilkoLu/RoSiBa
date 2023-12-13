@@ -5,6 +5,7 @@
 #define MAX_X 80
 #define MAX_Y 24
 
+#define DROPMSGTYPE 9
 
 struct Position2D
 {
