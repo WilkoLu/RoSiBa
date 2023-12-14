@@ -5,7 +5,14 @@
 #define MAX_X 80
 #define MAX_Y 24
 
+// 
 #define DROPMSGTYPE 9
+
+// Dateipfad für die Datenspeicherung
+#define PERSISTENT_DATA_FILE "data_and_logs/gps_sensor_data.txt"
+
+// Dateipfad für das Log
+#define LOG_FILE "data_and_logs/gps_sensor_log.txt"
 
 struct Position2D
 {
