@@ -21,6 +21,9 @@ void CalculateSuroundings(struct SharedMemory *sharedData, struct DroneSurroundi
     int x = sharedData->GPSPosition.XPos;
     int y = sharedData->GPSPosition.YPos;
 
+    printf("testX %d \n", x);
+    printf("testY %d \n", y);
+
     int halfWindowSize = WINDOW_SIZE / 2;
 
     int surroundings[WINDOW_SIZE][WINDOW_SIZE];
@@ -30,7 +33,8 @@ void CalculateSuroundings(struct SharedMemory *sharedData, struct DroneSurroundi
         for (int j = -halfWindowSize; j <= halfWindowSize; ++j)
         {
             //surroundings[i + halfWindowSize][j + halfWindowSize] = 1;
-            //printf();
+            printf("%d",y + i);
+            printf("%d",x + i);
             if ((y + i) < 0 || (y + i) > MAX_Y || (x + j) < 0 || (x + j) > MAX_X)
             {
                 surroundings[i + halfWindowSize][j + halfWindowSize] = 1;
@@ -83,7 +87,7 @@ int main()
     while (1) {
         // Hier Simulieren Sie Sensoraktivität und generieren Sie Nachrichten
 
-        CalculateSuroundings(msg_queue_id, &mySurrounding);
+        CalculateSuroundings(sharedData, &mySurrounding);
 
         sendSurroundingmessage(msg_queue_id, 2, mySurrounding);
 

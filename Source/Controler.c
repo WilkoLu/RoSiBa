@@ -124,11 +124,12 @@ int main()
         
         
         ReceiveGPSPosMessage(msg_queue_id, 1, &sensorGPSPos);
-        //ReceiveSurroundingMessage(msg_queue_id, 2, &sensorDroneSurrounding);
+        ReceiveSurroundingMessage(msg_queue_id, 2, &sensorDroneSurrounding);
         ReceivePackageDataMessage(msg_queue_id, 3, &sensorPackageData);
 
         // Hier könnten Sie die Pfadplanungslogik implementieren
         printf("[C] Controllerprozess empfing GPS Sensordaten: %d %d\n", sensorGPSPos.XPos, sensorGPSPos.YPos);
+        printf("[C] Controllerprozess empfing Surroundingdata Sensordaten: %d %d %d ....\n", sensorDroneSurrounding.Top, sensorDroneSurrounding.TopRight, sensorDroneSurrounding.Right);
         printf("[C] Controllerprozess empfing Packagedata Sensordaten: %d %d\n", sensorPackageData.HasPackage, sensorPackageData.IsDropping);
 
         // Hier generieren Sie Steuerbefehle basierend auf den bewerteten Daten

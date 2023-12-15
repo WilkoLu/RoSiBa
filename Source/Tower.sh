@@ -33,6 +33,12 @@ while true; do
         start_process GPSSensor.out
     fi
 
+    # Überwache Surroundingsensor
+    if ! pgrep -f "Surroundingsensor.out" > /dev/null; then
+        echo "[T] Surroundingsensorprozess wurde beendet. Starte neu..."
+        start_process Surroundingsensor.out
+    fi
+
     # Überwache Aktuatorprozess
     if ! pgrep -x "Motor.out" > /dev/null; then
         echo "[T] Motorprozess wurde beendet. Starte neu..."
