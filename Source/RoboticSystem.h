@@ -8,6 +8,9 @@
 // 
 #define DROPMSGTYPE 9
 
+// Größe des Umfelds (ungerade für Symmetrie)
+#define WINDOW_SIZE 3  
+
 // Dateipfad für die Datenspeicherung
 #define PERSISTENT_DATA_FILE "data_and_logs/gps_sensor_data.txt"
 

@@ -13,11 +13,37 @@
 void ReceiveGPSPosMessage(int msg_queue_id, long msg_type, struct Position2D* gpsPos) {
     struct GPSPosMessage msg;
     if (msgrcv(msg_queue_id, &msg, sizeof(msg.GPSPosition), msg_type, 0) == -1) {
-        perror("Fehler beim Empfangen der Nachricht");
+        perror("[C] Fehler beim Empfangen der GPSPosMessage");
         exit(EXIT_FAILURE);
     }
     gpsPos->XPos = msg.GPSPosition.XPos;
     gpsPos->YPos = msg.GPSPosition.YPos;
+}
+
+void ReceiveSurroundingMessage(int msg_queue_id, long msg_type, struct DroneSurrounding* surrounding) {
+    struct SurroundingMessage msg;
+    if (msgrcv(msg_queue_id, &msg, sizeof(msg.Surrounding), msg_type, 0) == -1) {
+        perror("[C] Fehler beim Empfangen der SurroundingMessage");
+        exit(EXIT_FAILURE);
+    }
+    surrounding->Top = msg.Surrounding.Top;
+    surrounding->TopRight = msg.Surrounding.TopRight;
+    surrounding->Right = msg.Surrounding.Right;
+    surrounding->BottomRight = msg.Surrounding.BottomRight;
+    surrounding->Bottom = msg.Surrounding.Bottom;
+    surrounding->BottomLeft = msg.Surrounding.BottomLeft;
+    surrounding->Left = msg.Surrounding.Left;
+    surrounding->TopLeft = msg.Surrounding.TopLeft;
+}
+
+void ReceivePackageDataMessage(int msg_queue_id, long msg_type, struct PackageData* packData) {
+    struct PackageDataMessage msg;
+    if (msgrcv(msg_queue_id, &msg, sizeof(msg.PackageInfo), msg_type, 0) == -1) {
+        perror("[C] Fehler beim Empfangen der PackageDataMessage");
+        exit(EXIT_FAILURE);
+    }
+    packData->HasPackage = msg.PackageInfo.HasPackage;
+    packData->IsDropping = msg.PackageInfo.IsDropping;
 }
 
 void sendDirectionMessage(int msg_queue_id, long msg_type, enum Direction direction) {
@@ -93,8 +119,13 @@ int main()
         // Hier bewerten Sie Sensordaten und planen Pfade
         // Beispiel: Empfange Sensordaten von der Nachrichtenwarteschlange
         struct Position2D sensorGPSPos;
+        struct PackageData sensorPackageData;
+        struct DroneSurrounding sensorDroneSurrounding;
+        
         
         ReceiveGPSPosMessage(msg_queue_id, 1, &sensorGPSPos);
+        //ReceiveSurroundingMessage(msg_queue_id, 2, &sensorPackageData);
+        //ReceivePackageDataMessage(msg_queue_id, 3, &sensorDroneSurrounding);
 
         // Hier könnten Sie die Pfadplanungslogik implementieren
         printf("[C] Controllerprozess empfing GPS Sensordaten: %d %d\n", sensorGPSPos.XPos, sensorGPSPos.YPos);
