@@ -51,6 +51,8 @@ int main()
 
 
     struct PackageData myPackageStatus = { .HasPackage = true, .IsDropping = false};
+    sharedData->MyPackageData.HasPackage = myPackageStatus.HasPackage;
+    sharedData->MyPackageData.IsDropping = myPackageStatus.IsDropping;
 
 
     // Hauptlogik des Sensorprozesses
@@ -60,15 +62,17 @@ int main()
         myPackageStatus.HasPackage = sharedData->MyPackageData.HasPackage;
         myPackageStatus.IsDropping = sharedData->MyPackageData.IsDropping;
 
-        send_message(msg_queue_id, 3, myPackageStatus);
+        printf("[P] Packageprozess sendet Packagedata Sensordaten: %d %d\n", myPackageStatus.HasPackage, myPackageStatus.IsDropping);
+        send_package_message(msg_queue_id, 3, myPackageStatus);
 
         sleep(2); // Simuliere einen Sensorleseintervall (in Sekunden)
+
     }
 
 
     // Aufräumarbeiten (normalerweise wird dies nicht erreicht)
     if (msgctl(msg_queue_id, IPC_RMID, NULL) == -1) {
-        perror("[G] Fehler beim Löschen der Nachrichtenwarteschlange");
+        perror("[P] Fehler beim Löschen der Nachrichtenwarteschlange");
         exit(EXIT_FAILURE);
     }
 

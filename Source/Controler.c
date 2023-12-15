@@ -63,7 +63,7 @@ void sendDropnMessage(int msg_queue_id, long msg_type, bool drop) {
 int main()
 {
     int targetPointX = 11;
-    int targetPointY = 70;
+    int targetPointY = 7;//70
 
     key_t key = ftok("/tmp", 's');
     
@@ -124,11 +124,12 @@ int main()
         
         
         ReceiveGPSPosMessage(msg_queue_id, 1, &sensorGPSPos);
-        //ReceiveSurroundingMessage(msg_queue_id, 2, &sensorPackageData);
-        //ReceivePackageDataMessage(msg_queue_id, 3, &sensorDroneSurrounding);
+        //ReceiveSurroundingMessage(msg_queue_id, 2, &sensorDroneSurrounding);
+        ReceivePackageDataMessage(msg_queue_id, 3, &sensorPackageData);
 
         // Hier könnten Sie die Pfadplanungslogik implementieren
         printf("[C] Controllerprozess empfing GPS Sensordaten: %d %d\n", sensorGPSPos.XPos, sensorGPSPos.YPos);
+        printf("[C] Controllerprozess empfing Packagedata Sensordaten: %d %d\n", sensorPackageData.HasPackage, sensorPackageData.IsDropping);
 
         // Hier generieren Sie Steuerbefehle basierend auf den bewerteten Daten
         // Beispiel: Einfache Steuerbefehlsgenerierung
@@ -151,15 +152,23 @@ int main()
         }
         else 
         {
-            // send drop befehl
-            sendDropnMessage(msg_queue_id, DROPMSGTYPE, true);
-
-            sleep(12);
-
-            // ToDo: new target point
-            targetPointX = 0;
-            targetPointY = 0;
-
+            if (sensorPackageData.HasPackage == true && sensorPackageData.IsDropping == false)
+            {
+                // send drop befehl
+                sendDropnMessage(msg_queue_id, DROPMSGTYPE, true);
+                sleep(2); 
+                continue;
+            }
+            else if (sensorPackageData.IsDropping == true)
+            {
+                continue;
+            }
+            else if (sensorPackageData.HasPackage == false && sensorPackageData.IsDropping == false)
+            {
+                // ToDo: new target point
+                targetPointX = 0;
+                targetPointY = 0;
+            }
             continue;
         }
         

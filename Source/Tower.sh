@@ -45,9 +45,9 @@ while true; do
         start_process Droper.out
     fi
 
-    # Überwache Packageprozess
-    if ! pgrep -x "PackageSensor.out" > /dev/null; then
-        echo "[T] Packageprozess wurde beendet. Starte neu..."
+    # Überwache Aktuatorprozess
+    if ! pgrep -f "PackageSensor.out" > /dev/null; then #ToDo: chaecken warum es hier nicht mit -x funktioniert
+        echo "[T] Packagesensorprozess wurde beendet. Starte neu..."
         start_process PackageSensor.out
     fi
 
