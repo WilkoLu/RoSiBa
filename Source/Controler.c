@@ -9,7 +9,10 @@
 #include "RoboticSystem.h"
 
 
-
+/// @brief Wenn msgrcv eine Message [msg] mit {Type 1} mit ID [msg_queue_id] und Type [msg_type] empfängt. Setze die empfangene GPS Position in X und Y
+/// @param msg_queue_id 
+/// @param msg_type 
+/// @param gpsPos 
 void ReceiveGPSPosMessage(int msg_queue_id, long msg_type, struct Position2D* gpsPos) {
     struct GPSPosMessage msg;
     if (msgrcv(msg_queue_id, &msg, sizeof(msg.GPSPosition), msg_type, 0) == -1) {
@@ -20,6 +23,10 @@ void ReceiveGPSPosMessage(int msg_queue_id, long msg_type, struct Position2D* gp
     gpsPos->YPos = msg.GPSPosition.YPos;
 }
 
+/// @brief Wenn msgrcv eine Message [msg] {Type 2} mit ID [msg_queue_id] und Type [msg_type] empfängt. Setze die empfangenen Umgebungswerte [0 - Kein Hindernis] oder [1 - Hindernis]
+/// @param msg_queue_id 
+/// @param msg_type 
+/// @param surrounding 
 void ReceiveSurroundingMessage(int msg_queue_id, long msg_type, struct DroneSurrounding* surrounding) {
     struct SurroundingMessage msg;
     if (msgrcv(msg_queue_id, &msg, sizeof(msg.Surrounding), msg_type, 0) == -1) {
@@ -36,6 +43,10 @@ void ReceiveSurroundingMessage(int msg_queue_id, long msg_type, struct DroneSurr
     surrounding->TopLeft = msg.Surrounding.TopLeft;
 }
 
+/// @brief Wenn msgrcv eine Message [msg] {Type 3} mit ID [msg_queue_id] und Type [msg_type] empfängt. Setze die empfangenen Paketdaten HasPackage [True | false] und IsDropping [True | false]
+/// @param msg_queue_id 
+/// @param msg_type 
+/// @param packData 
 void ReceivePackageDataMessage(int msg_queue_id, long msg_type, struct PackageData* packData) {
     struct PackageDataMessage msg;
     if (msgrcv(msg_queue_id, &msg, sizeof(msg.PackageInfo), msg_type, 0) == -1) {
@@ -46,14 +57,22 @@ void ReceivePackageDataMessage(int msg_queue_id, long msg_type, struct PackageDa
     packData->IsDropping = msg.PackageInfo.IsDropping;
 }
 
-void sendDirectionMessage(int msg_queue_id, long msg_type, enum Direction direction) {
+/// @brief Sendet Message an den Motor {Type 8} mit FlyDirection UP DOWN RIGHT LEFT
+/// @param msg_queue_id 
+/// @param msg_type 
+/// @param  
+void SendDirectionMessage(int msg_queue_id, long msg_type, enum Direction direction) {
     struct DirectionMessage msg;
     msg.MsgType = msg_type;
     msg.FlyDirection = direction;
     msgsnd(msg_queue_id, &msg, sizeof(msg.FlyDirection), 0);
 }
 
-void sendDropnMessage(int msg_queue_id, long msg_type, bool drop) {
+/// @brief Sendet Message an den Droper {Type 9} Dropbefehl ausführen. Drop = true
+/// @param msg_queue_id 
+/// @param msg_type 
+/// @param drop 
+void SendDropMessage(int msg_queue_id, long msg_type, bool drop) {
     struct DropMessage msg;
     msg.MsgType = msg_type;
     msg.DropPackage = drop;
@@ -155,8 +174,8 @@ int main()
         {
             if (sensorPackageData.HasPackage == true && sensorPackageData.IsDropping == false)
             {
-                // send drop befehl
-                sendDropnMessage(msg_queue_id, DROPMSGTYPE, true);
+                // send drop befehl                
+                SendDropMessage(msg_queue_id, DROPMSGTYPE, true);
                 sleep(2); 
                 continue;
             }
@@ -174,7 +193,7 @@ int main()
         }
         
         // Senden Sie die generierten Steuerbefehle an die Nachrichtenwarteschlange
-        sendDirectionMessage(msg_queue_id, FLYDIRECTIONMSGTYPE, nextDirection);
+        SendDirectionMessage(msg_queue_id, FLYDIRECTIONMSGTYPE, nextDirection);
 
         sleep(2); // Beispiel: Intervall zwischen Pfadbewertungen und Steuerbefehlsgenerierung (in Sekunden)
     }
