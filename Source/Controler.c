@@ -82,7 +82,7 @@ void SendDropMessage(int msg_queue_id, long msg_type, bool drop) {
 int main()
 {
     int targetPointX = 11;
-    int targetPointY = 7;//70
+    int targetPointY = 7;
 
     key_t key = ftok("/tmp", 's');
     
@@ -118,6 +118,7 @@ int main()
     sharedData->Grid[15][60] = 1;
     sharedData->Grid[20][10] = 1;
     sharedData->Grid[2][2] = 1;
+    sharedData->Grid[2][1] = 1;
     sharedData->Grid[13][41] = 1;
 
     sharedData->GPSPosition.XPos = 0;
@@ -156,19 +157,19 @@ int main()
         enum Direction nextDirection;
         if (sensorGPSPos.XPos < targetPointX)
         {
-            nextDirection = DOWN;
+            nextDirection = RIGHT;
         }
         else if (sensorGPSPos.XPos > targetPointX)
         {
-            nextDirection = UP;
+            nextDirection = LEFT;
         }
         else if (sensorGPSPos.YPos < targetPointY)
         {
-            nextDirection = RIGHT;
+            nextDirection = DOWN;
         }
         else if (sensorGPSPos.YPos > targetPointY)
         {
-            nextDirection = LEFT;
+            nextDirection = UP;
         }
         else 
         {

@@ -16,37 +16,26 @@ void sendSurroundingmessage(int msg_queue_id, long msg_type, struct DroneSurroun
     msgsnd(msg_queue_id, &msg, sizeof(msg.Surrounding), 0);
 }
 
-void CalculateSuroundings(struct SharedMemory *sharedData, struct DroneSurrounding *surrounding) {
+// Helper function to check if the coordinates are within the grid
+int isWithinGrid(int nx, int ny) {
+        return nx >= 0 && nx < MAX_X && ny >= 0 && ny < MAX_Y;
+}
 
+void CalculateSurroundings(struct SharedMemory *sharedData, struct DroneSurrounding *surrounding) {
     int x = sharedData->GPSPosition.XPos;
     int y = sharedData->GPSPosition.YPos;
-
-    printf("testX %d \n", x);
-    printf("testY %d \n", y);
-
-    int halfWindowSize = WINDOW_SIZE / 2;
-
-    int surroundings[WINDOW_SIZE][WINDOW_SIZE];
-
-    for (int i = -halfWindowSize; i <= halfWindowSize; ++i)
-    {
-        for (int j = -halfWindowSize; j <= halfWindowSize; ++j)
-        {
-            //surroundings[i + halfWindowSize][j + halfWindowSize] = 1;
-            printf("%d",y + i);
-            printf("%d",x + i);
-            if ((y + i) < 0 || (y + i) > MAX_Y || (x + j) < 0 || (x + j) > MAX_X)
-            {
-                surroundings[i + halfWindowSize][j + halfWindowSize] = 1;
-            }
-            else
-            {
-                surroundings[i + halfWindowSize][j + halfWindowSize] = sharedData->Grid[y + i][x + j];
-            }
-        }
-    }
     
+    // Assigning values to each direction
+    surrounding->Top        = isWithinGrid(x, y - 1) ? sharedData->Grid[y - 1][x] : 1;
+    surrounding->TopRight   = isWithinGrid(x + 1, y - 1) ? sharedData->Grid[y - 1][x + 1] : 1;
+    surrounding->Right      = isWithinGrid(x + 1, y) ? sharedData->Grid[y][x + 1] : 1;
+    surrounding->BottomRight= isWithinGrid(x + 1, y + 1) ? sharedData->Grid[y + 1][x + 1] : 1;
+    surrounding->Bottom     = isWithinGrid(x, y + 1) ? sharedData->Grid[y + 1][x] : 1;
+    surrounding->BottomLeft = isWithinGrid(x - 1, y + 1) ? sharedData->Grid[y + 1][x - 1] : 1;
+    surrounding->Left       = isWithinGrid(x - 1, y) ? sharedData->Grid[y][x - 1] : 1;
+    surrounding->TopLeft    = isWithinGrid(x - 1, y - 1) ? sharedData->Grid[y - 1][x - 1] : 1;
 }
+
 
 int main()
 {
@@ -87,7 +76,9 @@ int main()
     while (1) {
         // Hier Simulieren Sie Sensoraktivität und generieren Sie Nachrichten
 
-        CalculateSuroundings(sharedData, &mySurrounding);
+        CalculateSurroundings(sharedData, &mySurrounding);
+
+        printf("[S] Surroundingprozess sendet : %d %d %d %d ....\n", mySurrounding.Top, mySurrounding.TopRight, mySurrounding.Right, mySurrounding.BottomRight);
 
         sendSurroundingmessage(msg_queue_id, SURROUNDINGMSGTYPE, mySurrounding);
 

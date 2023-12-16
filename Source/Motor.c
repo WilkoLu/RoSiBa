@@ -65,27 +65,27 @@ int main()
         int yPos = sharedData->GPSPosition.YPos;
         if (flyDirection == UP)
         {
-            sharedData->Grid[xPos][yPos] = 0;
-            xPos = xPos - 1;
-            sharedData->Grid[xPos][yPos] = 2; // 2 als drown id
+            sharedData->Grid[yPos][xPos] = 0;
+            yPos = yPos - 1;
+            sharedData->Grid[yPos][xPos] = 2; // 2 als drown id
         }
         else if (flyDirection == DOWN)
         {
-            sharedData->Grid[xPos][yPos] = 0;
-            xPos = xPos + 1;
-            sharedData->Grid[xPos][yPos] = 2;
+            sharedData->Grid[yPos][xPos] = 0;
+            yPos = yPos + 1;
+            sharedData->Grid[yPos][xPos] = 2;
         }
         else if (flyDirection == RIGHT)
         {
-            sharedData->Grid[xPos][yPos] = 0;
-            yPos = yPos + 1;
-            sharedData->Grid[xPos][yPos] = 2;
+            sharedData->Grid[yPos][xPos] = 0;
+            xPos = xPos + 1;
+            sharedData->Grid[yPos][xPos] = 2;
         }
         else if (flyDirection == LEFT)
         {
-            sharedData->Grid[xPos][yPos] = 0;
-            yPos = yPos - 1;
-            sharedData->Grid[xPos][yPos] = 2;
+            sharedData->Grid[yPos][xPos] = 0;
+            xPos = xPos - 1;
+            sharedData->Grid[yPos][xPos] = 2;
         }
         sharedData->GPSPosition.XPos = xPos;
         sharedData->GPSPosition.YPos = yPos;
