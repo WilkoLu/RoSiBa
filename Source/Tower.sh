@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Funktion zum Starten eines Prozesses im Hintergrund
-start_process() {
+start_process() {    
     ./$1 &
     echo "[T] Started process $1 (PID: $!)."
 }
@@ -11,8 +11,9 @@ start_process() {
 cleanup() {
     echo "[T] Terminating all child processes and cleaning inter process communication ..."
 
-    # Alle Kindprozesse terminieren
+    # Alle Kindprozesse terminieren und alle Ausgabefenster schließen
     pkill -TERM -P $$
+    killall DroneAnimation.out
     # Message Queue löschen
     ipcrm -Q 7681
     # Shared Memory löschen
@@ -62,6 +63,13 @@ while true; do
     if ! pgrep -f "PackageSensor.out" > /dev/null; then #ToDo: chaecken warum es hier nicht mit -x funktioniert
         echo "[T] Packagesensor-process stopped working. Restart..."
         start_process PackageSensor.out
+    fi
+
+    # Überwache DroneAnimation
+    if ! pgrep -f "DroneAnimation.out" > /dev/null; then
+        echo "[T] DroneAnimation-process stopped working. Restart..."
+        current_dir=$(pwd)
+        cmd.exe /C start wsl bash -c "cd $current_dir && ./DroneAnimation.out;"
     fi
 
     sleep 5 # Überwachungsintervall (in Sekunden)

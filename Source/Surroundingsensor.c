@@ -8,12 +8,18 @@
 #include <stdbool.h>
 #include <time.h>
 #include "RoboticSystem.h"
+#include "Logging.h"
 
 void sendSurroundingmessage(int msg_queue_id, long msg_type, struct DroneSurrounding surrounding) {
     struct SurroundingMessage msg;
     msg.MsgType = msg_type;
     msg.Surrounding = surrounding;
     msgsnd(msg_queue_id, &msg, sizeof(msg.Surrounding), 0);
+
+    // Logging
+    char logMessage[100];
+    sprintf(logMessage, "[S] Surroundingprocess sends : %d %d %d %d", surrounding.Top, surrounding.TopRight, surrounding.Right, surrounding.BottomRight);
+    writeToLog(SURROUNDING_LOG_FILE, logMessage);
 }
 
 // Helper function to check if the coordinates are within the grid

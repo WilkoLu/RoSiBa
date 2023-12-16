@@ -8,24 +8,24 @@
 #include <stdbool.h>
 #include <time.h>
 #include "RoboticSystem.h"
+#include "Logging.h"
 
 void send_package_message(int msg_queue_id, long msg_type, struct PackageData package) {
     struct PackageDataMessage msg;
     msg.MsgType = msg_type;
     msg.PackageInfo = package;
     msgsnd(msg_queue_id, &msg, sizeof(msg.PackageInfo), 0);
+
+    // Logging
+    char logMessage[] = "[P] Packageprocess sends Packagedata Sensordata HasPackage; IsDropping: ";
+    strcat(logMessage, package.HasPackage ? "True ;" : "False ;");    
+    strcat(logMessage, package.IsDropping ? " True" : " False");
+    writeToLog(PACKAGE_LOG_FILE, logMessage);
 }
 
 
 int main()
 {
-    // Schlüssel generieren (muss derselbe wie im anderen Programm sein)
-    key_t key = ftok("/tmp", 's');
-    if (key == -1) {
-        perror("[P] ftok");
-        exit(EXIT_FAILURE);
-    }
-
     // Shared Memory ID abrufen
     int shmID = shmget(SHMKEY, sizeof(struct SharedMemory), 0644);
     if (shmID == -1) {

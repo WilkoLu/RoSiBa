@@ -24,7 +24,12 @@
 #define PERSISTENT_DATA_FILE "data_and_logs/gps_sensor_data.txt"
 
 // Dateipfad für das Log
-#define LOG_FILE "data_and_logs/gps_sensor_log.txt"
+#define CONTROLLER_LOG_FILE "data_and_logs/controller_log.txt"
+#define GPS_LOG_FILE "data_and_logs/gps_sensor_log.txt"
+#define DROPPER_LOG_FILE "data_and_logs/dropper_sensor_log.txt"
+#define ENGINE_LOG_FILE "data_and_logs/engine_sensor_log.txt"
+#define PACKAGE_LOG_FILE "data_and_logs/package_sensor_log.txt"
+#define SURROUNDING_LOG_FILE "data_and_logs/surrounding_sensor_log.txt"
 
 struct Position2D
 {
@@ -88,7 +93,7 @@ struct SharedMemory {
     int Grid[MAX_Y][MAX_X];
     struct PackageData MyPackageData;
     struct Position2D GPSPosition;
+    struct Position2D TargetPosition;
 };
-
 
 #endif // ROBOTICSYSTEM_H

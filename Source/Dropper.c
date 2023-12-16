@@ -7,6 +7,7 @@
 #include <sys/ipc.h>
 #include <stdbool.h>
 #include "RoboticSystem.h"
+#include "Logging.h"
 
 
 // Funktion zum Empfangen von Nachrichten aus der Warteschlange
@@ -20,14 +21,7 @@ void receiveDropMessage(int msg_queue_id, long msg_type, bool* drop) {
 }
 
 int main()
-{
-    // Schlüssel generieren (muss derselbe wie im anderen Programm sein)
-    key_t key = ftok("/tmp", 's');
-    if (key == -1) {
-        perror("ftok");
-        exit(EXIT_FAILURE);
-    }
-
+{    
     // Shared Memory ID abrufen
     int shmID = shmget(SHMKEY, sizeof(struct SharedMemory), 0644);
     if (shmID == -1) {
@@ -65,12 +59,13 @@ int main()
         if (drop == true)
         {
             sharedData->MyPackageData.IsDropping = true;
+            writeToLog(DROPPER_LOG_FILE, "Started dropping package");
             sleep(10);
+            writeToLog(DROPPER_LOG_FILE, "Finished dropping package");
             sharedData->MyPackageData.HasPackage = false;
             sharedData->MyPackageData.IsDropping = false;
         }
         
-
         //sleep(2); // Beispiel: Wartezeit zwischen Aktionen (in Sekunden)
     }
 

@@ -4,9 +4,11 @@
 #include <unistd.h>
 #include <sys/msg.h>
 #include <sys/shm.h>
+#include <time.h>
 #include <sys/ipc.h>
 #include <stdbool.h>
 #include "RoboticSystem.h"
+#include "Logging.h"
 
 
 /// @brief Wenn msgrcv eine Message [msg] mit {Type 1} mit ID [msg_queue_id] und Type [msg_type] empfängt. Setze die empfangene GPS Position in X und Y
@@ -57,6 +59,25 @@ void ReceivePackageDataMessage(int msg_queue_id, long msg_type, struct PackageDa
     packData->IsDropping = msg.PackageInfo.IsDropping;
 }
 
+const char *directionToString(enum Direction direction) {
+    switch(direction) {
+        case UP:
+            return "UP";
+        case DOWN:
+            return "DOWN";
+        case RIGHT:
+            return "RIGHT";
+        case LEFT:
+            return "LEFT";
+        default:
+            return "UNKNOWN";
+    }
+}
+
+const char* boolToString(int boolean) {
+    return boolean ? "true" : "false";
+}
+
 /// @brief Sendet Message an den Engine {Type 8} mit FlyDirection UP DOWN RIGHT LEFT
 /// @param msg_queue_id 
 /// @param msg_type 
@@ -65,7 +86,12 @@ void SendDirectionMessage(int msg_queue_id, long msg_type, enum Direction direct
     struct DirectionMessage msg;
     msg.MsgType = msg_type;
     msg.FlyDirection = direction;
-    msgsnd(msg_queue_id, &msg, sizeof(msg.FlyDirection), 0);
+    msgsnd(msg_queue_id, &msg, sizeof(msg.FlyDirection), 0);  
+
+    // Logging der gesendeten Nachricht in die Logdatei
+    char directionString[] = "[C] Controllerprocess sent DirectionMessage: ";
+    strcat(directionString, directionToString(direction));
+    writeToLog(CONTROLLER_LOG_FILE , directionString);
 }
 
 /// @brief Sendet Message an den Dropper {Type 9} Dropbefehl ausführen. Drop = true
@@ -76,21 +102,111 @@ void SendDropMessage(int msg_queue_id, long msg_type, bool drop) {
     struct DropMessage msg;
     msg.MsgType = msg_type;
     msg.DropPackage = drop;
-    msgsnd(msg_queue_id, &msg, sizeof(msg.DropPackage), 0);
+    msgsnd(msg_queue_id, &msg, sizeof(msg.DropPackage), 0);   
+
+    // Logging der gesendeten Nachricht in die Logdatei
+    char dropString[] = "[C] Controllerprocess sent DropMessage: ";
+    strcat(dropString, boolToString(drop));
+    writeToLog(CONTROLLER_LOG_FILE , dropString); 
+}
+
+/// @brief Berechnet "stark vereinfacht" den nächsten Schritt anhand der GPS Position, der Ziel Position und der Umgebung
+/// @param gpsPos
+/// @param targetPos
+/// @param surrounding
+/// @return enum Direction
+enum Direction calculateNextStep(struct Position2D gpsPos, struct Position2D targetPos, struct DroneSurrounding surrounding)
+{
+    if (gpsPos.XPos < targetPos.XPos)
+    {
+        if (surrounding.Right == 0)
+        {
+            return RIGHT;
+        }
+        else if (surrounding.Top == 0)
+        {
+            return UP;
+        }
+        else if (surrounding.Bottom == 0)
+        {
+            return DOWN;
+        }
+        else
+        {
+            return LEFT;
+        }
+    }
+    else if (gpsPos.XPos > targetPos.XPos)
+    {
+        if (surrounding.Left == 0)
+        {
+            return LEFT;
+        }
+        else if (surrounding.Top == 0)
+        {
+            return UP;
+        }
+        else if (surrounding.Bottom == 0)
+        {
+            return DOWN;
+        }
+        else
+        {
+            return RIGHT;
+        }
+    }
+    else if (gpsPos.YPos < targetPos.YPos)
+    {
+        if (surrounding.Bottom == 0)
+        {
+            return DOWN;
+        }
+        else if (surrounding.Left == 0)
+        {
+            return LEFT;
+        }
+        else if (surrounding.Right == 0)
+        {
+            return RIGHT;
+        }
+        else
+        {
+            return UP;
+        }
+    }
+    else if (gpsPos.YPos > targetPos.YPos)
+    {
+        if (surrounding.Top == 0)
+        {
+            return UP;
+        }
+        else if (surrounding.Right == 0)
+        {
+            return RIGHT;
+        }
+        else if (surrounding.Left == 0)
+        {
+            return LEFT;
+        }
+        else
+        {
+            return DOWN;
+        }
+    }
+    else
+    {
+        return UP;
+    }
 }
 
 int main()
 {
-    int targetPointX = 11;
-    int targetPointY = 7;
-
-    key_t key = ftok("/tmp", 's');
+    srand(time(NULL));
     
-    if (key == -1)
-    {
-        perror("ftok");
-        exit(EXIT_FAILURE);
-    }
+    // Generiere Zufallszahlen für targetPointX und targetPointY
+    struct Position2D targetPosition = {0, 0};
+    targetPosition.XPos = rand() % (MAX_X + 1); // Zufallszahl zwischen 0 und maxX
+    targetPosition.YPos = rand() % (MAX_Y + 1); // Zufallszahl zwischen 0 und maxY
 
     // Erstellen oder Zugriff auf den Shared Memory
     int shmID = shmget(SHMKEY, sizeof(struct SharedMemory), IPC_CREAT | 0644);
@@ -120,9 +236,15 @@ int main()
     sharedData->Grid[2][2] = 1;
     sharedData->Grid[2][1] = 1;
     sharedData->Grid[13][41] = 1;
+    sharedData->Grid[0][1] = 1;
+    sharedData->Grid[0][6] = 1;
+    sharedData->Grid[1][12] = 1;
 
     sharedData->GPSPosition.XPos = 0;
     sharedData->GPSPosition.YPos = 0;
+
+    sharedData->TargetPosition.XPos = targetPosition.XPos;
+    sharedData->TargetPosition.YPos = targetPosition.YPos;
 
 
     // Anschließen an die Nachrichtenwarteschlange
@@ -155,21 +277,22 @@ int main()
         // Hier generieren Sie Steuerbefehle basierend auf den bewerteten Daten
         // Beispiel: Einfache Steuerbefehlsgenerierung
         enum Direction nextDirection;
-        if (sensorGPSPos.XPos < targetPointX)
+        nextDirection = calculateNextStep(sensorGPSPos, targetPosition, sensorDroneSurrounding);
+        if (sensorGPSPos.XPos < targetPosition.XPos)
         {
-            nextDirection = RIGHT;
+            // nextDirection = RIGHT;
         }
-        else if (sensorGPSPos.XPos > targetPointX)
+        else if (sensorGPSPos.XPos > targetPosition.XPos)
         {
-            nextDirection = LEFT;
+            // nextDirection = LEFT;
         }
-        else if (sensorGPSPos.YPos < targetPointY)
+        else if (sensorGPSPos.YPos < targetPosition.YPos)
         {
-            nextDirection = DOWN;
+            // nextDirection = DOWN;
         }
-        else if (sensorGPSPos.YPos > targetPointY)
+        else if (sensorGPSPos.YPos > targetPosition.YPos)
         {
-            nextDirection = UP;
+            // nextDirection = UP;
         }
         else 
         {
@@ -187,12 +310,11 @@ int main()
             else if (sensorPackageData.HasPackage == false && sensorPackageData.IsDropping == false)
             {
                 // ToDo: new target point
-                targetPointX = 0;
-                targetPointY = 0;
+                targetPosition.XPos = 0;
+                targetPosition.YPos = 0;
             }
             continue;
         }
-        
         // Senden Sie die generierten Steuerbefehle an die Nachrichtenwarteschlange
         SendDirectionMessage(msg_queue_id, FLYDIRECTIONMSGTYPE, nextDirection);
 
