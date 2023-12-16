@@ -10,6 +10,7 @@
 #include <locale.h>
 #include "RoboticSystem.h"
 
+// prototypes for wide-character functions
 int addwstr(const wchar_t *wstr);
 int addnwstr(const wchar_t *wstr, int n);
 int waddwstr(WINDOW *win, const wchar_t *wstr);
@@ -44,17 +45,13 @@ void draw_obstacles_random(struct SharedMemory *sharedData)
             }
         }
     }
-    // wrefresh(gridWin);
-    // refresh();
 }
 
-void DrawElement(struct Position2D pos2D, wchar_t* plotElement, int colorPair)
+void draw_element(struct Position2D pos2D, wchar_t* plotElement, int colorPair)
 {
     attron(COLOR_PAIR(colorPair));
     mvwaddwstr(gridWin, pos2D.YPos, pos2D.XPos, plotElement);
     attroff(COLOR_PAIR(colorPair));
-    // wrefresh(gridWin);
-    // refresh();
 }
 
 
@@ -64,11 +61,10 @@ void Init(){
 
     // Initialize ncurses
     initscr();
-    //
     curs_set(0);
     keypad(stdscr, TRUE);
 
-    // Check for coloring
+    // Check for and enable coloring
     if (!has_colors())
     {
         endwin();
@@ -97,19 +93,17 @@ void Init(){
     wrefresh(gridWin);
 }
 
-void DrawMenu(struct SharedMemory* sharedData){
-    // wclear(menuWin);
+void draw_menu(struct SharedMemory* sharedData){
     mvwprintw(menuWin, 0,0,"Drone Position: %d, %d", sharedData->GPSPosition.XPos, sharedData->GPSPosition.YPos);
     mvwprintw(menuWin, 1,0,"Target Position: %d, %d", sharedData->TargetPosition.XPos, sharedData->TargetPosition.YPos);
     mvwprintw(menuWin, 2,0,"Has Package: %s", sharedData->MyPackageData.HasPackage ? "True" : "False");
     mvwprintw(menuWin, 3,0,"Is Dropping: %s", sharedData->MyPackageData.IsDropping ? "True" : "False");
-    // wrefresh(menuWin);
-    // refresh();
 }
 
 int main() {
     wchar_t DroneCharacter[] = L"🚁";
     wchar_t TargetCharacter[] = L"🎯";
+    wchar_t Dropping[] = L"📦❌✅🛑⏬";
 
     Init();
 
@@ -136,24 +130,27 @@ int main() {
 
     while (1) 
     {
-        // werase(); // Lösche den Bildschirm
+        // clear windows
         wclear(menuWin);
         wclear(gridWin);
 
+        // draw UI
         draw_obstacles_random(sharedData);
+        draw_element(sharedData->GPSPosition, DroneCharacter, 1);
+        draw_element(sharedData->TargetPosition, TargetCharacter, 3);
+        draw_menu(sharedData);
 
-        // DrawDrone(sharedData);
-        DrawElement(sharedData->GPSPosition, DroneCharacter, 1);
-        // DrawElement(sharedData->GPSPosition, L'^', 1);
-        DrawElement(sharedData->TargetPosition, TargetCharacter, 3);
-
-        DrawMenu(sharedData);
+        // refresh UI
         wrefresh(menuWin);
         wrefresh(gridWin);
 
-        usleep(100000); // Pause für 0.1 Sekunden
+        // sleep for 100ms
+        usleep(100000);
     }
 
-    endwin(); // Beende das curses-System
+    // Delete windows and end ncurses
+    delwin(gridWin);
+    delwin(menuWin);
+    endwin();
     return 0;
 }
