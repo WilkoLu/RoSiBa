@@ -13,7 +13,7 @@
 void receiveDirectionMessage(int msg_queue_id, long msg_type, enum Direction* dir) {
     struct DirectionMessage msg;
     if (msgrcv(msg_queue_id, &msg, sizeof(msg.FlyDirection), msg_type, 0) == -1) {
-        perror("[M] Error receiving message");
+        perror("[E] Error receiving message");
         exit(EXIT_FAILURE);
     }
     *dir = msg.FlyDirection;
@@ -31,14 +31,14 @@ int main()
     // Shared Memory ID abrufen
     int shmID = shmget(SHMKEY, sizeof(struct SharedMemory), 0644);
     if (shmID == -1) {
-        perror("[M] shmget");
+        perror("[E] shmget");
         exit(EXIT_FAILURE);
     }
 
     // Shared Memory anhängen
     struct SharedMemory *sharedData = shmat(shmID, NULL, 0);
     if (sharedData == (void *)-1) {
-        perror("[M] shmat");
+        perror("[E] shmat");
         exit(EXIT_FAILURE);
     }
 
@@ -46,7 +46,7 @@ int main()
     // Anschließen an die Nachrichtenwarteschlange
     int msg_queue_id = msgget(MSGKEY, 0666 | IPC_CREAT);
     if (msg_queue_id == -1) {
-        perror("[M] Error connecting to message queue");
+        perror("[E] Error connecting to message queue");
         exit(EXIT_FAILURE);
     }
 
@@ -59,7 +59,7 @@ int main()
 
         // Hier interpretieren Sie die Steuerbefehle und führen Aktionen aus
         // Führe eine Motor basierend auf dem Steuerbefehl aus
-        printf("[M] Motor process received control command: %d\n", flyDirection);
+        printf("[E] Engine process received control command: %d\n", flyDirection);
 
         int xPos = sharedData->GPSPosition.XPos;
         int yPos = sharedData->GPSPosition.YPos;

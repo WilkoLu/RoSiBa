@@ -29,9 +29,9 @@ trap cleanup SIGINT
 while true; do
 
     # Überwache Steuerungsprozess
-    if ! pgrep -x "Controler.out" > /dev/null; then
+    if ! pgrep -x "Controller.out" > /dev/null; then
         echo "[T] Controller-process stopped working. Restart..."
-        start_process Controler.out
+        start_process Controller.out
     fi
 
     # Überwache GPS Sensorprozess
@@ -47,15 +47,15 @@ while true; do
     fi
 
     # Überwache Aktuatorprozess
-    if ! pgrep -x "Motor.out" > /dev/null; then
+    if ! pgrep -x "Engine.out" > /dev/null; then
         echo "[T] Engine-process stopped working. Restart..."
-        start_process Motor.out
+        start_process Engine.out
     fi
 
     # Überwache Aktuatorprozess
-    if ! pgrep -x "Droper.out" > /dev/null; then
-        echo "[T] Droper-process stopped working. Restart..."
-        start_process Droper.out
+    if ! pgrep -x "Dropper.out" > /dev/null; then
+        echo "[T] Dropper-process stopped working. Restart..."
+        start_process Dropper.out
     fi
 
     # Überwache Aktuatorprozess

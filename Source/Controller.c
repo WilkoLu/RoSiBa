@@ -57,7 +57,7 @@ void ReceivePackageDataMessage(int msg_queue_id, long msg_type, struct PackageDa
     packData->IsDropping = msg.PackageInfo.IsDropping;
 }
 
-/// @brief Sendet Message an den Motor {Type 8} mit FlyDirection UP DOWN RIGHT LEFT
+/// @brief Sendet Message an den Engine {Type 8} mit FlyDirection UP DOWN RIGHT LEFT
 /// @param msg_queue_id 
 /// @param msg_type 
 /// @param  
@@ -68,7 +68,7 @@ void SendDirectionMessage(int msg_queue_id, long msg_type, enum Direction direct
     msgsnd(msg_queue_id, &msg, sizeof(msg.FlyDirection), 0);
 }
 
-/// @brief Sendet Message an den Droper {Type 9} Dropbefehl ausführen. Drop = true
+/// @brief Sendet Message an den Dropper {Type 9} Dropbefehl ausführen. Drop = true
 /// @param msg_queue_id 
 /// @param msg_type 
 /// @param drop 
