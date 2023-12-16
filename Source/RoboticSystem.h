@@ -15,6 +15,8 @@
 // Define key: Numerischer Schlüssel, identifiziert systemweit die Warteschlange
 #define MSGKEY 7681
 
+#define SHMKEY 7681
+
 // Größe des Umfelds (ungerade für Symmetrie)
 #define WINDOW_SIZE 3  
 
@@ -87,5 +89,6 @@ struct SharedMemory {
     struct PackageData MyPackageData;
     struct Position2D GPSPosition;
 };
+
 
 #endif // ROBOTICSYSTEM_H

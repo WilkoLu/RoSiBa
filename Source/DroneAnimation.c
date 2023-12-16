@@ -38,7 +38,7 @@ int main() {
     }
 
     // Erstellen oder Zugriff auf den Shared Memory
-    int shmID = shmget(key, sizeof(struct SharedMemory), IPC_CREAT | 0644);
+    int shmID = shmget(SHMKEY, sizeof(struct SharedMemory), IPC_CREAT | 0644);
     if (shmID == -1) {
         perror("shmget");
         exit(EXIT_FAILURE);

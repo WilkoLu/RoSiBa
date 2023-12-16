@@ -14,7 +14,7 @@
 void saveData(struct Position2D *data) {
     FILE *file = fopen(PERSISTENT_DATA_FILE, "wb");
     if (file == NULL) {
-        perror("[G] Fehler beim Öffnen der Datei zum Speichern");
+        perror("[G] Error while opening the save file.");
         exit(EXIT_FAILURE);
     }
 
@@ -27,7 +27,7 @@ void saveData(struct Position2D *data) {
 void loadData(struct Position2D *data) {
     FILE *file = fopen(PERSISTENT_DATA_FILE, "rb");
     if (file == NULL) {
-        perror("[G] Fehler beim Öffnen der Datei zum Laden");
+        perror("[G] Error opening the load file.");
         return;
     }
 
@@ -80,7 +80,7 @@ int main()
     }
 
     // Shared Memory ID abrufen
-    int shmID = shmget(key, sizeof(struct SharedMemory), 0644);
+    int shmID = shmget(SHMKEY, sizeof(struct SharedMemory), 0644);
     if (shmID == -1) {
         perror("[G] shmget");
         exit(EXIT_FAILURE);
@@ -97,7 +97,7 @@ int main()
     int msg_queue_id = msgget(MSGKEY, 0666 | IPC_CREAT);
     if (msg_queue_id == -1)
     {
-        perror("[G] Fehler beim Erstellen der Nachrichtenwarteschlange");
+        perror("[G] Error while creating the message queue.");
         exit(EXIT_FAILURE);
     }
 
@@ -133,7 +133,7 @@ int main()
 
     // Aufräumarbeiten (normalerweise wird dies nicht erreicht)
     if (msgctl(msg_queue_id, IPC_RMID, NULL) == -1) {
-        perror("[G] Fehler beim Löschen der Nachrichtenwarteschlange");
+        perror("[G] Error while deleting the message queue.");
         exit(EXIT_FAILURE);
     }
 

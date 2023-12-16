@@ -16,7 +16,7 @@
 void ReceiveGPSPosMessage(int msg_queue_id, long msg_type, struct Position2D* gpsPos) {
     struct GPSPosMessage msg;
     if (msgrcv(msg_queue_id, &msg, sizeof(msg.GPSPosition), msg_type, 0) == -1) {
-        perror("[C] Fehler beim Empfangen der GPSPosMessage");
+        perror("[C] Error while receiving the GPSPosMessage.");
         exit(EXIT_FAILURE);
     }
     gpsPos->XPos = msg.GPSPosition.XPos;
@@ -30,7 +30,7 @@ void ReceiveGPSPosMessage(int msg_queue_id, long msg_type, struct Position2D* gp
 void ReceiveSurroundingMessage(int msg_queue_id, long msg_type, struct DroneSurrounding* surrounding) {
     struct SurroundingMessage msg;
     if (msgrcv(msg_queue_id, &msg, sizeof(msg.Surrounding), msg_type, 0) == -1) {
-        perror("[C] Fehler beim Empfangen der SurroundingMessage");
+        perror("[C] Error while receiving the SurroundingMessage.");
         exit(EXIT_FAILURE);
     }
     surrounding->Top = msg.Surrounding.Top;
@@ -50,7 +50,7 @@ void ReceiveSurroundingMessage(int msg_queue_id, long msg_type, struct DroneSurr
 void ReceivePackageDataMessage(int msg_queue_id, long msg_type, struct PackageData* packData) {
     struct PackageDataMessage msg;
     if (msgrcv(msg_queue_id, &msg, sizeof(msg.PackageInfo), msg_type, 0) == -1) {
-        perror("[C] Fehler beim Empfangen der PackageDataMessage");
+        perror("[C] Error while receiving the PackageDataMessage.");
         exit(EXIT_FAILURE);
     }
     packData->HasPackage = msg.PackageInfo.HasPackage;
@@ -93,7 +93,7 @@ int main()
     }
 
     // Erstellen oder Zugriff auf den Shared Memory
-    int shmID = shmget(key, sizeof(struct SharedMemory), IPC_CREAT | 0644);
+    int shmID = shmget(SHMKEY, sizeof(struct SharedMemory), IPC_CREAT | 0644);
     if (shmID == -1) {
         perror("shmget");
         exit(EXIT_FAILURE);
@@ -128,7 +128,7 @@ int main()
     // Anschließen an die Nachrichtenwarteschlange
     int msg_queue_id = msgget(MSGKEY, 0666 | IPC_CREAT);
     if (msg_queue_id == -1) {
-        perror("[C] Fehler beim Anschließen an die Nachrichtenwarteschlange");
+        perror("[C] Error while adding to the message queue.");
         exit(EXIT_FAILURE);
     }
 
@@ -148,9 +148,9 @@ int main()
         ReceivePackageDataMessage(msg_queue_id, PACKAGEDATAMSGTYPE, &sensorPackageData);
 
         // Hier könnten Sie die Pfadplanungslogik implementieren
-        printf("[C] Controllerprozess empfing GPS Sensordaten: %d %d\n", sensorGPSPos.XPos, sensorGPSPos.YPos);
-        printf("[C] Controllerprozess empfing Surroundingdata Sensordaten: %d %d %d ....\n", sensorDroneSurrounding.Top, sensorDroneSurrounding.TopRight, sensorDroneSurrounding.Right);
-        printf("[C] Controllerprozess empfing Packagedata Sensordaten: %d %d\n", sensorPackageData.HasPackage, sensorPackageData.IsDropping);
+        printf("[C] Controllerprocess received GPS-sensordata: %d %d\n", sensorGPSPos.XPos, sensorGPSPos.YPos);
+        printf("[C] Controllerprocess received Surroundingdata-sensordata: %d %d %d ....\n", sensorDroneSurrounding.Top, sensorDroneSurrounding.TopRight, sensorDroneSurrounding.Right);
+        printf("[C] Controllerprocess received Packagedata-sensordata: %d %d\n", sensorPackageData.HasPackage, sensorPackageData.IsDropping);
 
         // Hier generieren Sie Steuerbefehle basierend auf den bewerteten Daten
         // Beispiel: Einfache Steuerbefehlsgenerierung
@@ -203,7 +203,7 @@ int main()
 
     // Aufräumarbeiten (normalerweise wird dies nicht erreicht)
     if (msgctl(msg_queue_id, IPC_RMID, NULL) == -1) {
-        perror("[C] Fehler beim Löschen der Nachrichtenwarteschlange");
+        perror("[C] Error while deleting the message queue.");
         exit(EXIT_FAILURE);
     }
 

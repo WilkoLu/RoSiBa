@@ -47,7 +47,7 @@ int main()
     }
 
     // Shared Memory ID abrufen
-    int shmID = shmget(key, sizeof(struct SharedMemory), 0644);
+    int shmID = shmget(SHMKEY, sizeof(struct SharedMemory), 0644);
     if (shmID == -1) {
         perror("[S] shmget");
         exit(EXIT_FAILURE);
@@ -64,7 +64,7 @@ int main()
     int msg_queue_id = msgget(MSGKEY, 0666 | IPC_CREAT);
     if (msg_queue_id == -1)
     {
-        perror("[S] Fehler beim Erstellen der Nachrichtenwarteschlange");
+        perror("[S] Error while creating the message queue.");
         exit(EXIT_FAILURE);
     }
 
@@ -78,7 +78,7 @@ int main()
 
         CalculateSurroundings(sharedData, &mySurrounding);
 
-        printf("[S] Surroundingprozess sendet : %d %d %d %d ....\n", mySurrounding.Top, mySurrounding.TopRight, mySurrounding.Right, mySurrounding.BottomRight);
+        printf("[S] Surroundingprocess sends : %d %d %d %d ....\n", mySurrounding.Top, mySurrounding.TopRight, mySurrounding.Right, mySurrounding.BottomRight);
 
         sendSurroundingmessage(msg_queue_id, SURROUNDINGMSGTYPE, mySurrounding);
 
@@ -88,7 +88,7 @@ int main()
 
     // Aufräumarbeiten (normalerweise wird dies nicht erreicht)
     if (msgctl(msg_queue_id, IPC_RMID, NULL) == -1) {
-        perror("[S] Fehler beim Löschen der Nachrichtenwarteschlange");
+        perror("[S] Error while deleting the message queue.");
         exit(EXIT_FAILURE);
     }
 
