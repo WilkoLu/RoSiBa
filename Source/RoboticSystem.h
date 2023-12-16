@@ -5,8 +5,15 @@
 #define MAX_X 80
 #define MAX_Y 24
 
-// 
+// Define Message Queue Types
+#define GPSPOSMSGTYPE 1
+#define SURROUNDINGMSGTYPE 2
+#define PACKAGEDATAMSGTYPE 3
+#define FLYDIRECTIONMSGTYPE 8
 #define DROPMSGTYPE 9
+
+// Define key: Numerischer Schlüssel, identifiziert systemweit die Warteschlange
+#define MSGKEY 7681
 
 // Größe des Umfelds (ungerade für Symmetrie)
 #define WINDOW_SIZE 3  

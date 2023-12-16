@@ -72,7 +72,7 @@ int main()
     }
 
     // Erstellen oder Anschließen an die Nachrichtenwarteschlange
-    int msg_queue_id = msgget(7681, 0666 | IPC_CREAT);
+    int msg_queue_id = msgget(MSGKEY, 0666 | IPC_CREAT);
     if (msg_queue_id == -1)
     {
         perror("[S] Fehler beim Erstellen der Nachrichtenwarteschlange");
@@ -89,7 +89,7 @@ int main()
 
         CalculateSuroundings(sharedData, &mySurrounding);
 
-        sendSurroundingmessage(msg_queue_id, 2, mySurrounding);
+        sendSurroundingmessage(msg_queue_id, SURROUNDINGMSGTYPE, mySurrounding);
 
         sleep(2); // Simuliere einen Sensorleseintervall (in Sekunden)
     }

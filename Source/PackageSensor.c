@@ -41,7 +41,7 @@ int main()
     }
 
     // Erstellen oder Anschließen an die Nachrichtenwarteschlange
-    int msg_queue_id = msgget(7681, 0666 | IPC_CREAT);
+    int msg_queue_id = msgget(MSGKEY, 0666 | IPC_CREAT);
     if (msg_queue_id == -1)
     {
         perror("[P] Fehler beim Erstellen der Nachrichtenwarteschlange");
@@ -63,7 +63,7 @@ int main()
         myPackageStatus.IsDropping = sharedData->MyPackageData.IsDropping;
 
         printf("[P] Packageprozess sendet Packagedata Sensordaten: %d %d\n", myPackageStatus.HasPackage, myPackageStatus.IsDropping);
-        send_package_message(msg_queue_id, 3, myPackageStatus);
+        send_package_message(msg_queue_id, PACKAGEDATAMSGTYPE, myPackageStatus);
 
         sleep(2); // Simuliere einen Sensorleseintervall (in Sekunden)
 

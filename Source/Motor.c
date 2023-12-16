@@ -44,7 +44,7 @@ int main()
 
 
     // Anschließen an die Nachrichtenwarteschlange
-    int msg_queue_id = msgget(7681, 0666 | IPC_CREAT);
+    int msg_queue_id = msgget(MSGKEY, 0666 | IPC_CREAT);
     if (msg_queue_id == -1) {
         perror("[M] Fehler beim Anschließen an die Nachrichtenwarteschlange");
         exit(EXIT_FAILURE);
@@ -55,7 +55,7 @@ int main()
     while (1) {
         // Empfangen Sie Steuerbefehle von der Nachrichtenwarteschlange
         enum Direction flyDirection;
-        receiveDirectionMessage(msg_queue_id, 8, &flyDirection);
+        receiveDirectionMessage(msg_queue_id, FLYDIRECTIONMSGTYPE, &flyDirection);
 
         // Hier interpretieren Sie die Steuerbefehle und führen Aktionen aus
         // Führe eine Motor basierend auf dem Steuerbefehl aus

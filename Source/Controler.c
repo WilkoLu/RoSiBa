@@ -106,7 +106,7 @@ int main()
 
 
     // Anschließen an die Nachrichtenwarteschlange
-    int msg_queue_id = msgget(7681, 0666 | IPC_CREAT);
+    int msg_queue_id = msgget(MSGKEY, 0666 | IPC_CREAT);
     if (msg_queue_id == -1) {
         perror("[C] Fehler beim Anschließen an die Nachrichtenwarteschlange");
         exit(EXIT_FAILURE);
@@ -123,9 +123,9 @@ int main()
         struct DroneSurrounding sensorDroneSurrounding;
         
         
-        ReceiveGPSPosMessage(msg_queue_id, 1, &sensorGPSPos);
-        ReceiveSurroundingMessage(msg_queue_id, 2, &sensorDroneSurrounding);
-        ReceivePackageDataMessage(msg_queue_id, 3, &sensorPackageData);
+        ReceiveGPSPosMessage(msg_queue_id, GPSPOSMSGTYPE, &sensorGPSPos);
+        ReceiveSurroundingMessage(msg_queue_id, SURROUNDINGMSGTYPE, &sensorDroneSurrounding);
+        ReceivePackageDataMessage(msg_queue_id, PACKAGEDATAMSGTYPE, &sensorPackageData);
 
         // Hier könnten Sie die Pfadplanungslogik implementieren
         printf("[C] Controllerprozess empfing GPS Sensordaten: %d %d\n", sensorGPSPos.XPos, sensorGPSPos.YPos);
@@ -174,7 +174,7 @@ int main()
         }
         
         // Senden Sie die generierten Steuerbefehle an die Nachrichtenwarteschlange
-        sendDirectionMessage(msg_queue_id, 8, nextDirection);
+        sendDirectionMessage(msg_queue_id, FLYDIRECTIONMSGTYPE, nextDirection);
 
         sleep(2); // Beispiel: Intervall zwischen Pfadbewertungen und Steuerbefehlsgenerierung (in Sekunden)
     }
