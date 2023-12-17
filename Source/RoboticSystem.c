@@ -28,7 +28,7 @@ char* boolToString(bool boolean) {
 int createMessageQueue(){
     int msg_queue_id = msgget(MSGKEY, 0666 | IPC_CREAT);
     if (msg_queue_id == -1) {
-        perror("[C] Error while adding to the message queue.");
+        perror("[C] Error while creating the message queue.");
         exit(EXIT_FAILURE);
     }
     return msg_queue_id;
@@ -37,7 +37,7 @@ int createMessageQueue(){
 int getMessageQueue(){
     int msg_queue_id = msgget(MSGKEY, 0);
     if (msg_queue_id == -1) {
-        perror("[C] Error while adding to the message queue.");
+        perror("Error while adding to the message queue.");
         exit(EXIT_FAILURE);
     }
     return msg_queue_id;
@@ -46,12 +46,12 @@ int getMessageQueue(){
 struct SharedData* createShm(){
     int shmID = shmget(SHMKEY, sizeof(struct SharedData), IPC_CREAT | 0644);
     if (shmID == -1) {
-        perror("shmget");
+        perror("[C] Error while creating shared memory - shmget");
         exit(EXIT_FAILURE);
     }
     struct SharedData *sharedData = shmat(shmID, NULL, 0);
     if (sharedData == (void *)-1) {
-        perror("shmat");
+        perror("[C] Error while creating shared memory - shmat");
         exit(EXIT_FAILURE);
     }
     return sharedData;
@@ -60,12 +60,12 @@ struct SharedData* createShm(){
 struct SharedData* getShm(){
     int shmID = shmget(SHMKEY, sizeof(struct SharedData), 0);
     if (shmID == -1) {
-        perror("shmget");
+        perror("Error while getting shared memory - shmget");
         exit(EXIT_FAILURE);
     }
     struct SharedData *sharedData = shmat(shmID, NULL, 0);
     if (sharedData == (void *)-1) {
-        perror("shmat");
+        perror("Error while getting shared memory - shmat");
         exit(EXIT_FAILURE);
     }
     return sharedData;

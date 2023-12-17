@@ -10,6 +10,7 @@
 #include "RoboticSystem.h"
 #define NAME_WIDTH 30
 #define VALUE_WIDTH 2
+#define EMOJI_WIDTH 2
 
 // Prototypen für wide-character Funktionen
 int addwstr(const wchar_t *wstr);
@@ -120,8 +121,8 @@ void Init(){
 void draw_menu(struct SharedData* sharedData) {
     mvwprintw(menuWin, 0, 0, "%-*s %*d, %*d", NAME_WIDTH, "🚁 Drone Position:", VALUE_WIDTH, sharedData->GPSPosition.XPos, VALUE_WIDTH, sharedData->GPSPosition.YPos);
     mvwprintw(menuWin, 1, 0, "%-*s %*d, %*d", NAME_WIDTH, "🎯 Target Position:", VALUE_WIDTH, sharedData->TargetPosition.XPos, VALUE_WIDTH, sharedData->TargetPosition.YPos);
-    mvwprintw(menuWin, 2, 0, "%-*s %*s", NAME_WIDTH, "📦 Has Package:", VALUE_WIDTH, sharedData->MyPackageData.HasPackage ? "✅" : "❌");
-    mvwprintw(menuWin, 3, 0, "%-*s %*s", NAME_WIDTH, "⏬ Is currently dropping a package:", VALUE_WIDTH, sharedData->MyPackageData.IsDropping ? "✅" : "❌");
+    mvwprintw(menuWin, 2, 0, "%-*s %*s", NAME_WIDTH, "📦 Has Package:", VALUE_WIDTH, sharedData->MyPackageData.HasPackage ? " ✅" : "❌");
+    mvwprintw(menuWin, 3, 0, "%-*s %*s", NAME_WIDTH, "⏬ Is Dropping:", VALUE_WIDTH, sharedData->MyPackageData.IsDropping ? " ✅" : "❌");
 }
 
 int main() {
@@ -142,8 +143,8 @@ int main() {
         // Zeichne die Elemente    
         draw_obstacles(sharedData, 1);
         draw_element(sharedData->TargetPosition, TargetCharacter, 0);
-        draw_element(sharedData->GPSPosition, DroneCharacter, 0);
         draw_element(sharedData->PackageDropPosition, PackageCharacter, 0);
+        draw_element(sharedData->GPSPosition, DroneCharacter, 0);
         draw_menu(sharedData);
 
         // Aktualisiere die Windows

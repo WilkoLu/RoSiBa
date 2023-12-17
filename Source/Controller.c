@@ -173,94 +173,129 @@ void SendDropMessage(int msg_queue_id, long msg_type, bool drop)
     writeToLog(CONTROLLER_LOG_FILE, dropString);
 }
 
-/// @brief Berechnet "stark vereinfacht" den nächsten Schritt anhand der GPS Position, der Ziel Position und der Umgebung
+/// @brief Berechnet den nächsten Schritt anhand der GPS Position, der Ziel Position und der Umgebung
 /// @param gpsPos
 /// @param targetPos
 /// @param surrounding
 /// @return enum Direction
 enum Direction calculateNextStep(struct Position2D gpsPos, struct Position2D targetPos, struct DroneSurrounding surrounding)
 {
-    if (gpsPos.XPos < targetPos.XPos)
+    // Entscheide zufällig, ob in X- oder Y-Richtung bewegt wird
+    int randomDirection = rand() % 2;
+
+    if (randomDirection == 0) // Bewege dich in X-Richtung
     {
-        if (surrounding.Right == 0)
+        if (gpsPos.XPos < targetPos.XPos && surrounding.Right == 0)
         {
             return RIGHT;
         }
-        else if (surrounding.Top == 0)
-        {
-            return UP;
-        }
-        else if (surrounding.Bottom == 0)
-        {
-            return DOWN;
-        }
-        else
+        else if (gpsPos.XPos > targetPos.XPos && surrounding.Left == 0)
         {
             return LEFT;
         }
     }
-    else if (gpsPos.XPos > targetPos.XPos)
+    else //Bewege dich in Y-Richtung
     {
-        if (surrounding.Left == 0)
-        {
-            return LEFT;
-        }
-        else if (surrounding.Top == 0)
-        {
-            return UP;
-        }
-        else if (surrounding.Bottom == 0)
+        if (gpsPos.YPos < targetPos.YPos && surrounding.Bottom == 0)
         {
             return DOWN;
         }
-        else
-        {
-            return RIGHT;
-        }
-    }
-    else if (gpsPos.YPos < targetPos.YPos)
-    {
-        if (surrounding.Bottom == 0)
-        {
-            return DOWN;
-        }
-        else if (surrounding.Left == 0)
-        {
-            return LEFT;
-        }
-        else if (surrounding.Right == 0)
-        {
-            return RIGHT;
-        }
-        else
+        else if (gpsPos.YPos > targetPos.YPos && surrounding.Top == 0)
         {
             return UP;
         }
     }
-    else if (gpsPos.YPos > targetPos.YPos)
+
+    // Wenn die gewählte Richtung nicht möglich ist, dann probiere die andere Richtung
+    if (randomDirection == 0) // Bewege dich in X-Richtung
     {
-        if (surrounding.Top == 0)
-        {
-            return UP;
-        }
-        else if (surrounding.Right == 0)
-        {
-            return RIGHT;
-        }
-        else if (surrounding.Left == 0)
-        {
-            return LEFT;
-        }
-        else
+        if (gpsPos.YPos < targetPos.YPos && surrounding.Bottom == 0)
         {
             return DOWN;
         }
+        else if (gpsPos.YPos > targetPos.YPos && surrounding.Top == 0)
+        {
+            return UP;
+        }
     }
-    else
+    else // Bewege dich in Y-Richtung
+    {
+        if (gpsPos.XPos < targetPos.XPos && surrounding.Right == 0)
+        {
+            return RIGHT;
+        }
+        else if (gpsPos.XPos > targetPos.XPos && surrounding.Left == 0)
+        {
+            return LEFT;
+        }
+    }
+
+    // Wenn keine Richtung möglich ist, dann finde zumindest freien Weg
+    if (surrounding.Bottom == 0)
+    {
+        return DOWN;
+    }
+    else if (surrounding.Top == 0)
     {
         return UP;
     }
+    else if (surrounding.Right == 0)
+    {
+        return RIGHT;
+    }
+    else if (surrounding.Left == 0)
+    {
+        return LEFT;
+    }
+    
+    // Dieser Fall sollte nicht eintreten
+    printf("No direction found.\n");
+    exit(EXIT_FAILURE);
 }
+
+enum Direction calculateNextStep2(struct Position2D gpsPos, struct Position2D targetPos, struct DroneSurrounding surrounding) {
+    // Calculate differences in X and Y positions
+    int diffX = targetPos.XPos - gpsPos.XPos;
+    int diffY = targetPos.YPos - gpsPos.YPos;
+
+    // Prioritize the direction with the largest difference
+    if (abs(diffX) > abs(diffY)) {
+        // Move in X direction if possible
+        if (diffX > 0 && surrounding.Right == 0) {
+            return RIGHT;
+        } else if (diffX < 0 && surrounding.Left == 0) {
+            return LEFT;
+        }
+    } else {
+        // Move in Y direction if possible
+        if (diffY > 0 && surrounding.Bottom == 0) {
+            return DOWN;
+        } else if (diffY < 0 && surrounding.Top == 0) {
+            return UP;
+        }
+    }
+
+    // If preferred direction is blocked, try the other direction
+    if (diffY != 0) {
+        if (diffY > 0 && surrounding.Bottom == 0) {
+            return DOWN;
+        } else if (diffY < 0 && surrounding.Top == 0) {
+            return UP;
+        }
+    }
+    if (diffX != 0) {
+        if (diffX > 0 && surrounding.Right == 0) {
+            return RIGHT;
+        } else if (diffX < 0 && surrounding.Left == 0) {
+            return LEFT;
+        }
+    }
+    
+    exit(EXIT_FAILURE);
+    // If both directions are blocked, stay in place or implement a more complex strategy
+    //return STAY; // STAY is a new enum value indicating no movement.
+}
+
 
 /// @brief Generiert [numberOfObstacles] Hindernisse und schreibt diese ins Grid im SharedData
 /// @param sharedData
@@ -330,14 +365,14 @@ void resetToOrigin(struct Position2D* targetPosition, struct Position2D* lastGPS
 
 int main()
 {
-    srand(time(NULL));
+    srand(468);
 
     // Generiere Zufallszahlen für targetPointX und targetPointY
     struct Position2D targetPosition = {0, 0};
-    // targetPosition.XPos = rand() % (MAX_X); // Zufallszahl zwischen 0 und maxX
-    // targetPosition.YPos = rand() % (MAX_Y); // Zufallszahl zwischen 0 und maxY
-    targetPosition.XPos = 39; // Zufallszahl zwischen 0 und maxX
-    targetPosition.YPos = 19; // Zufallszahl zwischen 0 und maxY
+    targetPosition.XPos = rand() % (MAX_X); // Zufallszahl zwischen 0 und maxX
+    targetPosition.YPos = rand() % (MAX_Y); // Zufallszahl zwischen 0 und maxY
+    // targetPosition.XPos = 39; // Zufallszahl zwischen 0 und maxX
+    // targetPosition.YPos = 19; // Zufallszahl zwischen 0 und maxY
 
     // Erstellen des Shared Memory
     struct SharedData *sharedData = createShm();
@@ -354,7 +389,7 @@ int main()
         }
     }
 
-    generateObstacles(sharedData, 25);
+    generateObstacles(sharedData, 35);
 
     // Setze die Startposition auf 0,0
     sharedData->GPSPosition.XPos = 0;
