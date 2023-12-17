@@ -5,13 +5,14 @@ Autoren - Gruppe C:
 - Wilko Lühring
 - Silas Köhnke
 - Timon Faß
+  
+## Einleitung
 
-https://github.com/WilkoLu/RoSiBa/assets/56156680/6e03eef0-fa98-49b5-bfa5-a884b5eab088
-
+Dieses Projekt beschäftigt sich mit der Aufgabe, ein einfaches Robotik-Simulationssystem auf einem Linux-basierten Betriebssystem zu entwickeln. Das System soll darüber hinaus Prozesse zur Simulation von Sensordaten und Aktuatorsteuerung beinhalten. Die Kommunikation zwischen diesen Prozessen soll über Interprozesskommunikationsmechanismen erfolgen. Zusätzlich soll ein Skript zur Automatisierung von Start, Überwachung und Shutdown des Simulationssystems erstellt werden. Basierend auf dieser Aufgabe hat sich die Idee ergeben, eine fliegende Drohne zu simulieren. Diese soll eine Strecke zu einen Ziel zurückliegen und dort ein Paket abliefern. Auf dem Weg begegnet sie Hindernissen, denen sie ausweichen muss. Dafür wird die Drohne mit drei Sensoren ausgestattet, welche die Position, das Paket und die Umgebung überwachen. Entsprechend der Messwerte wird die Drohne über einen Controller und die Aktuatoren eines Motors und eines Droppers (zum Abliefern des Paketes) gesteuert. Genaueres dazu ist im Kapitel *Systementwurf* nachzulesen. Außerdem wird während der Umsetzung der Drohnen-Simulation Logging integriert.
 
 ## Zusammenarbeit
-Dieses Projekt wurde mithilfe der [Live Share Extension](https://learn.microsoft.com/en-us/visualstudio/liveshare/) in Visual Studio Code entwickelt. Die Live Share Extension ermöglicht es Entwicklern, in Echtzeit zusammenzuarbeiten, Code zu teilen und gemeinsam an Projekten zu arbeiten. Die Commits für dieses Projekt wurden aktiv gemeinsam erstellt.
 
+Dieses Projekt wurde mithilfe der [Live Share Extension](https://learn.microsoft.com/en-us/visualstudio/liveshare/) in Visual Studio Code entwickelt. Die Live Share Extension ermöglicht es Entwicklern, in Echtzeit zusammenzuarbeiten, Code zu teilen und gemeinsam an Projekten zu arbeiten. Die Commits für dieses Projekt wurden aktiv gemeinsam erstellt.
 
 ## Systementwurf
 
@@ -71,6 +72,8 @@ Die main-Funktion ist der Einstiegspunkt der simulierten Engine. Die Funktion `g
 
 Die File `Dropper.c` implementiert die Hauptlogik eines Droppers, der auf Steuerbefehle wartet und dann entsprechende Aktionen ausführt. Der Code verwendet ebenfalls Nachrichtenwarteschlangen und Shared Memory für die Kommunikation zwischen verschiedenen Prozessen. Die Funktion `receiveDropMessage` empfängt eine Nachricht aus der Warteschlange mit der ID `msg_queue_id` und dem Nachrichtentyp `msg_type`. Die empfangene Nachricht wird in einer Struktur namens `DropMessage` gespeichert. Die Funktion gibt den Booleschen Wert aus der empfangenen Nachricht über den Zeiger `drop` zurück. In der main-Funktion wird zunächst die Funktion `getShm` verwendet, um auf den Shared Memory zuzugreifen. Im Anschluss wird die Funktion `getMessageQueue` verwendet, um die ID der Nachrichtenwarteschlange zu erhalten. Die Hauptlogik des Droppers beginnt in der darauffolgenden Endlosschleife. Hier wartet der Dropper auf Befehle. In der Schleife wird die Funktion `receiveDropMessage` aufgerufen, um Steuerbefehle aus der Nachrichtenwarteschlange zu empfangen. Basierend auf den Steuerbefehlen wird das Droppen des Paketes simuliert, wenn der Steuerbefehl "true" ist. Danach wird der Shared Memory aktualisiert und das Logging durchgeführt.
 
+### Drone Animation
+
 ## Nutzung der Interprozesskommunikation
 
 In diesem Projekt wird die Interprozesskommunikation verwendet, um eine effiziente Kommunikation zwischen den verschiedenen Prozessen zu ermöglichen. Interprozesskommunikation ist entscheidend, um Daten zwischen den einzelnen Komponenten des Robotiksystems auszutauschen, Steuerbefehle zu übermitteln und den aktuellen Zustand des Systems zu synchronisieren. Folgende Methoden wurden dafür in diesem Projekt verwendet.
@@ -107,6 +110,8 @@ kompiliert. Das Starten des Programmes erfolgt im Anschluss durch das Ausführen
 ```
 bash Tower.sh
 ```
-Um die Simulation zu verwenden, muss Windows Subsystem for Linux (WSL) verwendet werden, da im Verlauf automatisch ein Windows Terminal geöffnet wird. In der Simulation erhält die Drohne ein Ziel und Hindernisse. Sie wird zum Ziel fliegen, die Hindernisse umgehen, ihr Paket droppen und danach zurück zum Startpunkt fliegen. Die Logdateien sind im Verzeichnis `data_and_logs` zu finden.
+Um die Simulation zu verwenden, muss Windows Subsystem for Linux (WSL) verwendet werden, da im Verlauf automatisch ein Windows Terminal geöffnet wird. In der Simulation erhält die Drohne ein Ziel und Hindernisse. Sie wird zum Ziel fliegen, die Hindernisse umgehen, ihr Paket droppen und danach zurück zum Startpunkt fliegen. Die Logdateien sind im Verzeichnis `data_and_logs` zu finden. Eine Beispielausführung der Simulation ist im unten aufgeführten Video dargestellt.
+
+https://github.com/WilkoLu/RoSiBa/assets/56156680/6e03eef0-fa98-49b5-bfa5-a884b5eab088
 
 ## Fazit
