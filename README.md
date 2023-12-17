@@ -8,6 +8,10 @@ Autoren - Gruppe C:
 
 ## Ausführung der Simulation
 
+Zum Ausführen des Codes wird die Bibliothek `ncurses` benötigt. Diese wird mit folgendem Befehl installiert:
+```
+sudo apt-get install libncurses5-dev libncursesw5-dev
+```
 Alle C-Files werden durch das Ausführen des Bash-Skriptes compileAll.sh mit
 ```
 bash  compileAll.sh
