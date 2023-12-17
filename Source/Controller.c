@@ -11,38 +11,6 @@
 #include "RoboticSystem.h"
 #include "Logging.h"
 
-
-// Funktion zum Speichern der Daten
-void saveData(struct SharedData *data)
-{
-    FILE *file = fopen(PERSISTENT_DATA_FILE, "wb");
-    if (file == NULL)
-    {
-        perror("[G] Error while opening the save file.");
-        exit(EXIT_FAILURE);
-    }
-
-    fwrite(data, sizeof(struct Position2D), 1, file);
-
-    fclose(file);
-}
-
-// Funktion zum Laden der Daten
-void loadData(struct SharedData *data)
-{
-    FILE *file = fopen(PERSISTENT_DATA_FILE, "rb");
-    if (file == NULL)
-    {
-        perror("[G] Error opening the load file.");
-        return;
-    }
-
-    fread(data, sizeof(struct Position2D), 1, file);
-
-    fclose(file);
-}
-
-
 /// @brief Wenn msgrcv eine Message [msg] mit {Type 1} mit ID [msg_queue_id] und Type [msg_type] empfängt. Setze die empfangene GPS Position in X und Y
 /// @param msg_queue_id
 /// @param msg_type
@@ -68,11 +36,6 @@ void ReceiveGPSPosMessage(int msg_queue_id, long msg_type, struct Position2D *gp
                 exit(EXIT_FAILURE);
             }
         }
-        // else
-        // {
-        //     gpsPos->XPos = msg.GPSPosition.XPos;
-        //     gpsPos->YPos = msg.GPSPosition.YPos;
-        // }
     }
 
     if (msgrcv(msg_queue_id, &msg, sizeof(msg.GPSPosition), msg_type, 0) == -1)

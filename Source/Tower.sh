@@ -7,7 +7,7 @@ start_process() {
 }
 
 
-# Function to cleanup
+# Funktion zum Aufräumen
 cleanup() {
     echo "[T] Terminating all child processes and cleaning inter process communication ..."
 
@@ -22,7 +22,7 @@ cleanup() {
     exit 0
 }
 
-# Trap Ctrl+C (SIGINT) and call the cleanup function
+# Trap Ctrl+C (SIGINT) --> führe "cleanup" aus
 trap cleanup SIGINT
 
 
