@@ -55,7 +55,10 @@ Alle C-Files werden durch das Ausführen des Bash-Skriptes compileAll.sh mit
 ```
 bash  compileAll.sh
 ```
-kompiliert.
+kompiliert. Das Starten des Programmes erfolgt im Anschluss durch das Ausführen des Tower.sh Skriptes.
+```
+bash Tower.sh
+```
 
 
 WSL nötig, erst bash compileAll.sh, dann bash Tower.sh
