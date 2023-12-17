@@ -70,6 +70,9 @@ Die File Dropper.c implementiert die Hauptlogik eines Droppers, der auf Steuerbe
 
 ## Logging und Datensicherung
 
+Das Logging erfolgt über die 'Logging.c'. Dieses Programm besteht aus zwei Funktionen: 'ensureDirectoryExists' und 'writeToLog'. Diese Funktionen dienen dazu, sicherzustellen, dass ein bestimmtes Verzeichnis existiert und um Nachrichten in eine Logdatei zu schreiben. Die Funktion 'ensureDirectoryExists' überprüft, ob das Verzeichnis eines gegebenen Dateipfades für die Logdatei existiert. Wenn das Verzeichnis nicht existiert, wird versucht, es zu erstellen. Die Funktion verwendet ein temporäres Array tempPath, um den Dateipfad zu kopieren. Dann wird der Dateiname entfernt, um nur den Verzeichnispfad zu erhalten. Anschließend wird mit Hilfe der Funktion 'stat' überprüft, ob das Verzeichnis bereits existiert. Falls nicht, wird es mit der Funktion 'mkdir' erstellt. Die 'writeToLog' Funktion schreibt eine Nachricht in eine Logdatei. Sie ruft zuerst ensureDirectoryExists auf, um sicherzustellen, dass das Verzeichnis für die Logdatei vorhanden ist. Die Funktion öffnet die Logdatei im "Anhänge"-Modus ("a"), was bedeutet, dass neue Daten an das Ende der Datei angehängt werden. Falls die Datei nicht geöffnet werden kann, wird eine Fehlermeldung ausgegeben. Danach wird ein Zeitstempel hinzugefügt, der das aktuelle Datum und die aktuelle Uhrzeit repräsentiert. Die Funktion fprintf wird verwendet, um den Zeitstempel und die Nachricht in die Logdatei zu schreiben. Schließlich wird die Datei geschlossen. Eventuelle Fehlermeldungen werden mit perror auf der Konsole auszugeben.
+
+Die Header-Datei 'Logging.h' bietet eine Schnittstelle für die soeben beschriebenen Funktionen. Dies ermöglicht es, dass diese in anderen Teilen des Programmes verwendet werden können, ohne die genauen Implementierungen zu kennen.
 
 ## Ausführung der Simulation
 
