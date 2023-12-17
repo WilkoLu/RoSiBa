@@ -33,6 +33,8 @@ Die PackageSensor.c implementiert einen einfachen Prozess (Packageprocess), der 
 
 ### Surrounding-Sensor
 
+Die Surroundingsensor.c implementiert die Hauptlogik eines Sensorprozesses, der Umgebungsinformationen eines Roboters liest und diese Informationen über eine Nachrichtenwarteschlange an andere Prozesse sendet. Die Funktion 'sendSurroundingmessage' sendet eine Nachricht über eine Nachrichtenwarteschlange. Sie erstellt eine Instanz der Struktur SurroundingMessage, füllt sie mit den übergebenen Werten und sendet sie mit msgsnd an die Warteschlange. Zusätzlich wird ein Log-Eintrag erstellt, der die gesendeten Umgebungsinformationen protokolliert. Die Funktion 'isWithinGrid' überprüft, ob die angegebenen Koordinaten innerhalb eines festgelegten Rasters liegen. Die Funktion 'CalculateSurroundings' ist dazu da, um die Umgebungsinformationen (Top, TopRight, Right, BottomRight, Bottom, BottomLeft, Left, TopLeft) basierend auf den aktuellen GPS-Positionskoordinaten, die im Shared Memory (sharedData) gespeichert sind, zu berechnen. Die main-Funktion beginnt mit dem Abruf der Shared-Memory-ID und der Prozess verbindet sich mit dem Shared Memory. Ebenso wird eine Nachrichtenwarteschlange erstellt oder verbunden. Ein initialer Umgebungszustand mySurrounding wird erstellt und die Hauptschleife, in welcher der Sensor simuliert wird, beginnt Umgebungsinformationen zu berechnen und Nachrichten an die Warteschlange zu senden. Die Schleife wird durch usleep für eine bestimmte Zeit (Sensorleseintervall) unterbrochen. Nachdem die Hauptschleife beendet wurde, was normalerweise nicht passiert, werden Aufräumarbeiten durchgeführt, darunter das Löschen der Nachrichtenwarteschlange.
+
 ## Nutzung der Interprozesskommunikation
 
 
