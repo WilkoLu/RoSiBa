@@ -90,7 +90,7 @@ Die File `Dropper.c` implementiert die Hauptlogik eines Droppers, der auf Steuer
 
 ### Drone Animation
 
-
+Die `DroneAnimation.c` implementiert die Darstellung des Drohnen-Robotersystems auf einem Windows-Terminal mit Unterstützung von Unicode-Zeichen (insbesondere Emojis). Die Anwendung verwendet die ncurses-Bibliothek für die Erstellung von Benutzeroberflächen im Terminal und das Shared Memory. Oben in der Ausgabe ist ein Menü dargestellt, das dem Benutzer die Position der Drohne und des Ziels, sowie den Status, ob die Drohne ein Paket hat und ob sie dieses gerade droppt, mitteilt. Darunter ist das Grid mit den Hindernissen, der Drohne und dem Zielpunkt dargestellt. 
 
 ## Nutzung der Interprozesskommunikation
 
