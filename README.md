@@ -5,6 +5,20 @@ Autoren - Gruppe C:
 - Wilko Lühring
 - Silas Köhnke
 - Timon Faß
+
+## Ausführung der Simulation
+
+Alle C-Files werden durch das Ausführen des Bash-Skriptes compileAll.sh mit
+```
+bash  compileAll.sh
+```
+kompiliert. Das Starten des Programmes erfolgt im Anschluss durch das Ausführen des Tower.sh Skriptes.
+```
+bash Tower.sh
+```
+Um die Simulation zu verwenden, muss Windows Subsystem for Linux (WSL) verwendet werden, da im Verlauf automatisch ein Windows Terminal geöffnet wird. In der Simulation erhält die Drohne ein Ziel und Hindernisse. Sie wird zum Ziel fliegen, die Hindernisse umgehen, ihr Paket droppen und danach zurück zum Startpunkt fliegen. Die Logdateien sind im Verzeichnis `data_and_logs` zu finden. Eine Beispielausführung der Simulation ist im unten aufgeführten Video dargestellt.
+
+https://github.com/WilkoLu/RoSiBa/assets/56156680/6e03eef0-fa98-49b5-bfa5-a884b5eab088
   
 ## Einleitung
 
@@ -76,6 +90,8 @@ Die File `Dropper.c` implementiert die Hauptlogik eines Droppers, der auf Steuer
 
 ### Drone Animation
 
+
+
 ## Nutzung der Interprozesskommunikation
 
 In diesem Projekt wird die Interprozesskommunikation verwendet, um eine effiziente Kommunikation zwischen den verschiedenen Prozessen zu ermöglichen. Interprozesskommunikation ist entscheidend, um Daten zwischen den einzelnen Komponenten des Robotiksystems auszutauschen, Steuerbefehle zu übermitteln und den aktuellen Zustand des Systems zu synchronisieren. Folgende Methoden wurden dafür in diesem Projekt verwendet.
@@ -101,19 +117,5 @@ Insgesamt ermöglicht die kombinierte Nutzung von Message Queues und Shared Memo
 Das Logging erfolgt über die `Logging.c`. Dieses Programm besteht aus zwei Funktionen: `ensureDirectoryExists` und `writeToLog`. Diese Funktionen dienen dazu, sicherzustellen, dass ein bestimmtes Verzeichnis existiert und um Nachrichten in eine Logdatei zu schreiben. Die Funktion `ensureDirectoryExists` überprüft, ob das Verzeichnis eines gegebenen Dateipfades für die Logdatei existiert. Wenn das Verzeichnis nicht existiert, wird versucht, es zu erstellen. Die Funktion verwendet ein temporäres Array tempPath, um den Dateipfad zu kopieren. Dann wird der Dateiname entfernt, um nur den Verzeichnispfad zu erhalten. Anschließend wird mit Hilfe der Funktion `stat` überprüft, ob das Verzeichnis bereits existiert. Falls nicht, wird es mit der Funktion `mkdir` erstellt. Die `writeToLog` Funktion schreibt eine Nachricht in eine Logdatei. Sie ruft zuerst ensureDirectoryExists auf, um sicherzustellen, dass das Verzeichnis für die Logdatei vorhanden ist. Die Funktion öffnet die Logdatei im "Anhänge"-Modus ("a"), was bedeutet, dass neue Daten an das Ende der Datei angehängt werden. Falls die Datei nicht geöffnet werden kann, wird eine Fehlermeldung ausgegeben. Danach wird ein Zeitstempel hinzugefügt, der das aktuelle Datum und die aktuelle Uhrzeit repräsentiert. Die Funktion fprintf wird verwendet, um den Zeitstempel und die Nachricht in die Logdatei zu schreiben. Schließlich wird die Datei geschlossen. Eventuelle Fehlermeldungen werden mit perror auf der Konsole auszugeben.
 
 Die Header-Datei `Logging.h` bietet eine Schnittstelle für die soeben beschriebenen Funktionen. Dies ermöglicht es, dass diese in anderen Teilen des Programmes verwendet werden können, ohne die genauen Implementierungen zu kennen.
-
-## Ausführung der Simulation
-
-Alle C-Files werden durch das Ausführen des Bash-Skriptes compileAll.sh mit
-```
-bash  compileAll.sh
-```
-kompiliert. Das Starten des Programmes erfolgt im Anschluss durch das Ausführen des Tower.sh Skriptes.
-```
-bash Tower.sh
-```
-Um die Simulation zu verwenden, muss Windows Subsystem for Linux (WSL) verwendet werden, da im Verlauf automatisch ein Windows Terminal geöffnet wird. In der Simulation erhält die Drohne ein Ziel und Hindernisse. Sie wird zum Ziel fliegen, die Hindernisse umgehen, ihr Paket droppen und danach zurück zum Startpunkt fliegen. Die Logdateien sind im Verzeichnis `data_and_logs` zu finden. Eine Beispielausführung der Simulation ist im unten aufgeführten Video dargestellt.
-
-https://github.com/WilkoLu/RoSiBa/assets/56156680/6e03eef0-fa98-49b5-bfa5-a884b5eab088
 
 ## Fazit
