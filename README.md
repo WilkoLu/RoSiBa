@@ -51,10 +51,13 @@ Die Surroundingsensor.c implementiert die Hauptlogik eines Sensorprozesses, der 
 
 ### Engine
 
+In der Engine.c wird die Hauptlogik eines Motors für ein robotisches System implementiert. Dieses System empfängt Steuerbefehle über eine Nachrichtenwarteschlange und führt basierend auf diesen Befehlen Aktionen aus. Dabei wird Shared Memory verwendet. Die enthaltene Funktion 'enumToString' wandelt einen ENUM-Wert (enum Direction) in einen entsprechenden Text um. Sie verwendet dafür eine switch-Anweisung. Die Funktion 'receiveDirectionMessage' empfängt eine Nachricht von einer Nachrichtenwarteschlange (msg_queue_id). Die empfangene Nachricht wird in der Struktur DirectionMessage gespeichert. Falls ein Fehler beim Empfangen auftritt, wird eine Fehlermeldung ausgegeben und das Programm wird beendet.
+
+Die main-Funktion ist der Einstiegspunkt der simulierten Engine. Die Funktion 'getShm()' wird aufgerufen, um auf den Shared Memory zuzugreifen und ein struct SharedMemory zurückzugeben. Durch den Aufruf der Funktion 'getMessageQueue()' erhält das Programm die ID der Nachrichtenwarteschlange. Die Hauptlogik des Motors wird in einer Endlosschleife ausgeführt. In dieser werden Steuerbefehle von der Nachrichtenwarteschlange empfangen. Diese Steuerbefehle werden interpretiert, und entsprechende Aktionen (Up, Down, Left, Right) ausgeführt. Im Anschluss wird die Position des Roboters im gemeinsamen Speicher aktualisiert, und der Log-Eintrag wird erstellt. Da der Code in einer Endlosschleife ausgeführt wird, wartet das Programm kontinuierlich auf Steuerbefehle und führt Motoraktionen aus, solange es läuft.
+
 ### Dropper
 
 ## Nutzung der Interprozesskommunikation
-
 
 ## Logging und Datensicherung
 
