@@ -30,7 +30,7 @@ trap cleanup SIGINT
 while true; do
 
     # Überwache Steuerungsprozess
-    if ! pgrep -x "Controller.out" > /dev/null; then
+    if ! pgrep -f "Controller.out" > /dev/null; then
         echo "[T] Controller-process stopped working. Restart..."
         start_process Controller.out
     fi
@@ -47,25 +47,25 @@ while true; do
         start_process Surroundingsensor.out
     fi
 
-    # Überwache Aktuatorprozess
-    if ! pgrep -x "Engine.out" > /dev/null; then
-        echo "[T] Engine-process stopped working. Restart..."
-        start_process Engine.out
-    fi
-
-    # Überwache Aktuatorprozess
-    if ! pgrep -x "Dropper.out" > /dev/null; then
-        echo "[T] Dropper-process stopped working. Restart..."
-        start_process Dropper.out
-    fi
-
-    # Überwache Aktuatorprozess
+    # Überwache PackageSensor
     if ! pgrep -f "PackageSensor.out" > /dev/null; then #ToDo: chaecken warum es hier nicht mit -x funktioniert
         echo "[T] Packagesensor-process stopped working. Restart..."
         start_process PackageSensor.out
     fi
 
-    # Überwache DroneAnimation
+    # Überwache Aktuatorprozess Engine
+    if ! pgrep -x "Engine.out" > /dev/null; then
+        echo "[T] Engine-process stopped working. Restart..."
+        start_process Engine.out
+    fi
+
+    # Überwache Aktuatorprozess Dropper
+    if ! pgrep -x "Dropper.out" > /dev/null; then
+        echo "[T] Dropper-process stopped working. Restart..."
+        start_process Dropper.out
+    fi
+
+    # Überwache DroneAnimation UI-Prozess
     if ! pgrep -f "DroneAnimation.out" > /dev/null; then
         echo "[T] DroneAnimation-process stopped working. Restart..."
         current_dir=$(pwd)

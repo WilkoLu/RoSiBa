@@ -22,30 +22,13 @@ void receiveDropMessage(int msg_queue_id, long msg_type, bool* drop) {
 
 int main()
 {    
-    // Shared Memory ID abrufen
-    int shmID = shmget(SHMKEY, sizeof(struct SharedMemory), 0644);
-    if (shmID == -1) {
-        perror("[M] shmget");
-        exit(EXIT_FAILURE);
-    }
-
-    // Shared Memory anhängen
-    struct SharedMemory *sharedData = shmat(shmID, NULL, 0);
-    if (sharedData == (void *)-1) {
-        perror("[D] shmat");
-        exit(EXIT_FAILURE);
-    }
-
+    // get Shared Memory
+    struct SharedData *sharedData = getShm();
 
     // Anschließen an die Nachrichtenwarteschlange
-    int msg_queue_id = msgget(MSGKEY, 0666 | IPC_CREAT);
-    if (msg_queue_id == -1) {
-        perror("[D] Error connecting to message queue");
-        exit(EXIT_FAILURE);
-    }
+    int msg_queue_id = getMessageQueue();
 
-
-    // Hauptlogik des Mootors
+    // Hauptlogik des Droppers
     while (1) {
         // Empfangen Sie Steuerbefehle von der Nachrichtenwarteschlange
         bool drop = false;
@@ -60,13 +43,12 @@ int main()
         {
             sharedData->MyPackageData.IsDropping = true;
             writeToLog(DROPPER_LOG_FILE, "Started dropping package");
-            sleep(10);
+            usleep(DROPTIME_DROPPERSENSOR * 1000);
+            sharedData->PackageDropPosition.XPos = sharedData->GPSPosition.XPos;
+            sharedData->PackageDropPosition.YPos = sharedData->GPSPosition.YPos;
             writeToLog(DROPPER_LOG_FILE, "Finished dropping package");
-            sharedData->MyPackageData.HasPackage = false;
             sharedData->MyPackageData.IsDropping = false;
+            sharedData->MyPackageData.HasPackage = false;
         }
-        
-        //sleep(2); // Beispiel: Wartezeit zwischen Aktionen (in Sekunden)
     }
-
 }

@@ -18,7 +18,9 @@ void sendSurroundingmessage(int msg_queue_id, long msg_type, struct DroneSurroun
 
     // Logging
     char logMessage[100];
-    sprintf(logMessage, "[S] Surroundingprocess sends : %d %d %d %d", surrounding.Top, surrounding.TopRight, surrounding.Right, surrounding.BottomRight);
+    sprintf(logMessage, "[S] Surroundingprocess sends : %d %d %d %d %d %d %d %d ", 
+    surrounding.Top, surrounding.TopRight, surrounding.Right, surrounding.BottomRight,
+    surrounding.Bottom, surrounding.BottomLeft, surrounding.Left, surrounding.TopLeft);
     writeToLog(SURROUNDING_LOG_FILE, logMessage);
 }
 
@@ -27,7 +29,7 @@ int isWithinGrid(int nx, int ny) {
         return nx >= 0 && nx < MAX_X && ny >= 0 && ny < MAX_Y;
 }
 
-void CalculateSurroundings(struct SharedMemory *sharedData, struct DroneSurrounding *surrounding) {
+void CalculateSurroundings(struct SharedData *sharedData, struct DroneSurrounding *surrounding) {
     int x = sharedData->GPSPosition.XPos;
     int y = sharedData->GPSPosition.YPos;
     
@@ -44,36 +46,12 @@ void CalculateSurroundings(struct SharedMemory *sharedData, struct DroneSurround
 
 
 int main()
-{
-    // Schlüssel generieren (muss derselbe wie im anderen Programm sein)
-    key_t key = ftok("/tmp", 's');
-    if (key == -1) {
-        perror("[S] ftok");
-        exit(EXIT_FAILURE);
-    }
-
-    // Shared Memory ID abrufen
-    int shmID = shmget(SHMKEY, sizeof(struct SharedMemory), 0644);
-    if (shmID == -1) {
-        perror("[S] shmget");
-        exit(EXIT_FAILURE);
-    }
-
-    // Shared Memory anhängen
-    struct SharedMemory *sharedData = shmat(shmID, NULL, 0);
-    if (sharedData == (void *)-1) {
-        perror("[S] shmat");
-        exit(EXIT_FAILURE);
-    }
-
+{  
+    // get Shared Memory
+    struct SharedData *sharedData = getShm();
+    
     // Erstellen oder Anschließen an die Nachrichtenwarteschlange
-    int msg_queue_id = msgget(MSGKEY, 0666 | IPC_CREAT);
-    if (msg_queue_id == -1)
-    {
-        perror("[S] Error while creating the message queue.");
-        exit(EXIT_FAILURE);
-    }
-
+    int msg_queue_id = getMessageQueue();
 
     struct DroneSurrounding mySurrounding = { .Top = 1, .TopRight = 1, .Right = 1, .BottomRight = 1, .Bottom = 1, .BottomLeft = 1, .Left = 1, .TopLeft = 1};
 
@@ -84,18 +62,9 @@ int main()
 
         CalculateSurroundings(sharedData, &mySurrounding);
 
-        printf("[S] Surroundingprocess sends : %d %d %d %d ....\n", mySurrounding.Top, mySurrounding.TopRight, mySurrounding.Right, mySurrounding.BottomRight);
-
         sendSurroundingmessage(msg_queue_id, SURROUNDINGMSGTYPE, mySurrounding);
 
-        sleep(2); // Simuliere einen Sensorleseintervall (in Sekunden)
-    }
-
-
-    // Aufräumarbeiten (normalerweise wird dies nicht erreicht)
-    if (msgctl(msg_queue_id, IPC_RMID, NULL) == -1) {
-        perror("[S] Error while deleting the message queue.");
-        exit(EXIT_FAILURE);
+        usleep(SAMPLERATE_SURROUNDINGSENSOR * 1000); // Simuliere einen Sensorleseintervall (in Sekunden)
     }
 
     return 0;

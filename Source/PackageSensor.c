@@ -25,30 +25,12 @@ void send_package_message(int msg_queue_id, long msg_type, struct PackageData pa
 
 
 int main()
-{
-    // Shared Memory ID abrufen
-    int shmID = shmget(SHMKEY, sizeof(struct SharedMemory), 0644);
-    if (shmID == -1) {
-        perror("[P] shmget");
-        exit(EXIT_FAILURE);
-    }
-
-    // Shared Memory anhängen
-    struct SharedMemory *sharedData = shmat(shmID, NULL, 0);
-    if (sharedData == (void *)-1) {
-        perror("[P] shmat");
-        exit(EXIT_FAILURE);
-    }
+{    
+    // get Shared Memory 
+    struct SharedData *sharedData = getShm();
 
     // Erstellen oder Anschließen an die Nachrichtenwarteschlange
-    int msg_queue_id = msgget(MSGKEY, 0666 | IPC_CREAT);
-    if (msg_queue_id == -1)
-    {
-        perror("[P] Error while creating the message queue.");
-        exit(EXIT_FAILURE);
-    }
-
-
+    int msg_queue_id = getMessageQueue();
 
     struct PackageData myPackageStatus = { .HasPackage = true, .IsDropping = false};
     sharedData->MyPackageData.HasPackage = myPackageStatus.HasPackage;
@@ -62,18 +44,11 @@ int main()
         myPackageStatus.HasPackage = sharedData->MyPackageData.HasPackage;
         myPackageStatus.IsDropping = sharedData->MyPackageData.IsDropping;
 
-        printf("[P] Packageprocess sends Packagedata Sensordata: %d %d\n", myPackageStatus.HasPackage, myPackageStatus.IsDropping);
+        // printf("[P] Packageprocess sends Packagedata Sensordata: %d %d\n", myPackageStatus.HasPackage, myPackageStatus.IsDropping);
         send_package_message(msg_queue_id, PACKAGEDATAMSGTYPE, myPackageStatus);
 
-        sleep(2); // Simuliere einen Sensorleseintervall (in Sekunden)
+        usleep(SAMPLERATE_PACKAGESENSOR * 1000); // Simuliere einen Sensorleseintervall (in Sekunden)
 
-    }
-
-
-    // Aufräumarbeiten (normalerweise wird dies nicht erreicht)
-    if (msgctl(msg_queue_id, IPC_RMID, NULL) == -1) {
-        perror("[P] Error while creating the message queue.");
-        exit(EXIT_FAILURE);
     }
 
     return 0;

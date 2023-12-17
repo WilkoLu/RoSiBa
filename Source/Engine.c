@@ -35,30 +35,13 @@ void receiveDirectionMessage(int msg_queue_id, long msg_type, enum Direction* di
 
 int main()
 {
-    // Shared Memory ID abrufen
-    int shmID = shmget(SHMKEY, sizeof(struct SharedMemory), 0644);
-    if (shmID == -1) {
-        perror("[E] shmget");
-        exit(EXIT_FAILURE);
-    }
-
-    // Shared Memory anhängen
-    struct SharedMemory *sharedData = shmat(shmID, NULL, 0);
-    if (sharedData == (void *)-1) {
-        perror("[E] shmat");
-        exit(EXIT_FAILURE);
-    }
-
+    // get Shared Memory
+    struct SharedData *sharedData = getShm();
 
     // Anschließen an die Nachrichtenwarteschlange
-    int msg_queue_id = msgget(MSGKEY, 0666 | IPC_CREAT);
-    if (msg_queue_id == -1) {
-        perror("[E] Error connecting to message queue");
-        exit(EXIT_FAILURE);
-    }
+    int msg_queue_id = getMessageQueue();
 
-
-    // Hauptlogik des Mootors
+    // Hauptlogik des Motors
     while (1) {
         // Empfangen Sie Steuerbefehle von der Nachrichtenwarteschlange
         enum Direction flyDirection;
@@ -67,6 +50,10 @@ int main()
         // Hier interpretieren Sie die Steuerbefehle und führen Aktionen aus
         // Führe eine Motor basierend auf dem Steuerbefehl aus
         printf("[E] Engine process received control command: %s\n", enumToString(flyDirection));
+
+        // Simulierte zeit des Motors um befehle auszuführen
+        usleep(MOVETIME_ENGINE * 1000);
+
 
         int xPos = sharedData->GPSPosition.XPos;
         int yPos = sharedData->GPSPosition.YPos;
@@ -101,7 +88,6 @@ int main()
         sharedData->GPSPosition.XPos = xPos;
         sharedData->GPSPosition.YPos = yPos;
 
-        //sleep(2); // Beispiel: Wartezeit zwischen Aktionen (in Sekunden)
     }
 
 }

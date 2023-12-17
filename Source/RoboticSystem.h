@@ -1,9 +1,10 @@
 #ifndef ROBOTICSYSTEM_H
 #define ROBOTICSYSTEM_H
 
-
-#define MAX_X 80
-#define MAX_Y 24
+// #define MAX_X 80
+// #define MAX_Y 24
+#define MAX_X 40
+#define MAX_Y 20
 
 // Define Message Queue Types
 #define GPSPOSMSGTYPE 1
@@ -11,6 +12,17 @@
 #define PACKAGEDATAMSGTYPE 3
 #define FLYDIRECTIONMSGTYPE 8
 #define DROPMSGTYPE 9
+
+// Define Sleeptime - Sample rate Simulation in Millisekunden
+#define SAMPLERATE_GPSSENSOR 100
+#define SAMPLERATE_PACKAGESENSOR 100
+#define SAMPLERATE_SURROUNDINGSENSOR 100
+#define SAMPLERATE_CONTROLLER 50
+
+#define MOVETIME_ENGINE 500
+#define DROPTIME_DROPPERSENSOR 2700
+
+#define UI_REFRESH_RATE_MS 100
 
 // Define key: Numerischer Schlüssel, identifiziert systemweit die Warteschlange
 #define MSGKEY 7681
@@ -89,11 +101,20 @@ struct DropMessage {
     bool DropPackage;
 };
 
-struct SharedMemory {
+struct SharedData {
     int Grid[MAX_Y][MAX_X];
     struct PackageData MyPackageData;
     struct Position2D GPSPosition;
     struct Position2D TargetPosition;
+    struct Position2D PackageDropPosition;
 };
+
+// Funktion Prototypen
+char* directionToString(enum Direction direction);
+char* boolToString(bool boolean);
+struct SharedData* createShm();
+struct SharedData* getShm();
+int createMessageQueue();
+int getMessageQueue();
 
 #endif // ROBOTICSYSTEM_H
