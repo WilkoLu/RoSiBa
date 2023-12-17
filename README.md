@@ -27,7 +27,7 @@ Für jeden der Sensoren im Systementwurf ist eine C-File vorhanden. Somit sind e
 
 ### Tower
 
-Das Tower-Skript dient dem Zweck, alle Prozesse zu überwachen und sie bei Bedarf neu zu starten. Die Funktion start_process wird verwendet, um einen Prozess im Hintergrund zu starten. Der übergebene Prozessname ist das erste Argument ($1). Die Funktion startet den Prozess im Hintergrund (&) und gibt eine Nachricht aus, die den gestarteten Prozess und seine Prozess-ID (PID) anzeigt. Die cleanup-Funktion wird aufgerufen, um die Simulation sauber zu beenden. Sie gibt eine Meldung aus und beendet alle Kindprozesse, schließt alle Ausgabefenster (pkill -TERM -P $$), beendet den Prozess der Animation der Drohne "DroneAnimation.out" und löscht die Interprozesskommunikationsmittel, nämlich die Message Queues und den Shared Memory. Durch die Zeile
+Das Tower-Skript dient dem Zweck, alle Prozesse zu überwachen und sie bei Bedarf neu zu starten. Die Funktion start_process wird verwendet, um einen Prozess im Hintergrund zu starten. Der übergebene Prozessname ist das erste Argument ($1). Die Funktion startet den Prozess im Hintergrund ("&") und gibt eine Nachricht aus, die den gestarteten Prozess und seine Prozess-ID (PID) anzeigt. Die cleanup-Funktion wird aufgerufen, um die Simulation sauber zu beenden. Sie gibt eine Meldung aus und beendet alle Kindprozesse, schließt alle Ausgabefenster (pkill -TERM -P $$), beendet den Prozess der Animation der Drohne "DroneAnimation.out" und löscht die Interprozesskommunikationsmittel, nämlich die Message Queues und den Shared Memory. Durch die Zeile
 ```
 trap cleanup SIGINT
 ```
