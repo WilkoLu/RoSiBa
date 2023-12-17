@@ -119,3 +119,15 @@ Das Logging erfolgt über die `Logging.c`. Dieses Programm besteht aus zwei Funk
 Die Header-Datei `Logging.h` bietet eine Schnittstelle für die soeben beschriebenen Funktionen. Dies ermöglicht es, dass diese in anderen Teilen des Programmes verwendet werden können, ohne die genauen Implementierungen zu kennen.
 
 ## Fazit
+
+Das Projekt zeigt eine umfassende Implementierung eines Robotik-Simulationssystems, das auf einer Linux-basierten Umgebung mit Bash-Skripten und C-Programmen entwickelt wurde. Die Verwendung von Interprozesskommunikation in Form von Message Queues und Shared Memory spielt eine entscheidende Rolle in diesem System und bietet mehrere Vorteile. Zum einen ermöglichen die Message Queues eine zuverlässige und effiziente Kommunikation zwischen den verschiedenen Komponenten des Robotiksystems. Durch den Austausch von Nachrichten über diese Queues können die einzelnen Prozesse in Echtzeit miteinander kommunizieren. Dies ist besonders wichtig, um Sensordaten, Steuerbefehle und Systemzustände synchronisiert und konsistent zu halten. Für diese Methode wurde sich entschieden, da die Sensoren in diesem Fall in derselben Taktfrequenz senden. Um diese Synchronität zu ermöglichen, ist die Echtzeitkommunikation wichtig, was durch Message Queues und Shared Memory besonders umgesetzt werden kann.
+
+Die Verwendung von Shared Memory ermöglicht den gemeinsamen Zugriff auf Daten zwischen verschiedenen Prozessen. Insbesondere die Position der Drohne, der Zustand des Pakets und Informationen über die Umgebung werden über den Shared Memory geteilt. Dadurch wird sichergestellt, dass alle Prozesse stets auf die aktuellsten Daten zugreifen und basierend darauf ihre Aktionen koordinieren können. 
+
+Die Kombination aus Message Queues und Shared Memory ermöglicht es den Sensoren (GPS-Sensor, Package-Sensor, Surrounding-Sensor) und Aktuatoren (Engine, Dropper) effektiv miteinander zu interagieren. Die Sensoren senden kontinuierlich Daten über die Queues, während die Aktuatoren diese Daten lesen und entsprechende Aktionen ausführen. Dieser reibungslose Datenaustausch ist entscheidend für die Simulation realistischer Sensor-Aktor-Interaktionen.
+
+Das Tower-Skript überwacht kontinuierlich die laufenden Prozesse und gewährleistet deren Verfügbarkeit. Falls ein Prozess aus irgendeinem Grund beendet wird, wird er durch das Skript automatisch neu gestartet. Auch dabei ermöglicht die Verwendung von Message Queues und Shared Memory eine zuverlässige Koordination dieses Überwachungs- und Neustartmechanismus.
+
+Zusammenfassend trägt die gewählte Interprozesskommunikationsstrategie in Form von Message Queues und Shared Memory wesentlich zur Robustheit, Effizienz und Synchronisation im Drohnen-Simulationssystem bei. Die Verwendung dieser Mechanismen ermöglicht eine reibungslose Zusammenarbeit der verschiedenen Komponenten, was insbesondere in komplexen Robotik-Simulationen von großer Bedeutung ist. Die klare Aufteilung der Aufgaben auf verschiedene Prozesse, die durch Interprozesskommunikation miteinander kommunizieren, spiegelt eine effektive und gut strukturierte Systemarchitektur wider.
+
+
