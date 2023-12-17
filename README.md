@@ -9,15 +9,15 @@ Autoren - Gruppe C:
 ## Ausführung der Simulation
 
 Zum Ausführen des Codes wird die Bibliothek `ncurses` benötigt. Diese wird mit folgendem Befehl installiert:
-```
+```sh
 sudo apt-get install libncurses5-dev libncursesw5-dev
 ```
 Alle C-Files werden durch das Ausführen des Bash-Skriptes compileAll.sh mit
-```
+```sh
 bash  compileAll.sh
 ```
 kompiliert. Das Starten des Programmes erfolgt im Anschluss durch das Ausführen des Tower.sh Skriptes.
-```
+```sh
 bash Tower.sh
 ```
 Um die Simulation zu verwenden, muss Windows Subsystem for Linux (WSL) verwendet werden, da im Verlauf automatisch ein Windows Terminal geöffnet wird. In der Simulation erhält die Drohne ein Ziel und Hindernisse. Sie wird zum Ziel fliegen, die Hindernisse umgehen, ihr Paket droppen und danach zurück zum Startpunkt fliegen. Die Logdateien sind im Verzeichnis `data_and_logs` zu finden. Eine Beispielausführung der Simulation ist im unten aufgeführten Video dargestellt.
