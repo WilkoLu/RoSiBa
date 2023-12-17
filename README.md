@@ -18,7 +18,9 @@ bash Tower.sh
 ```
 Um die Simulation zu verwenden, muss Windows Subsystem for Linux (WSL) verwendet werden, da im Verlauf automatisch ein Windows Terminal geöffnet wird. In der Simulation erhält die Drohne ein Ziel und Hindernisse. Sie wird zum Ziel fliegen, die Hindernisse umgehen, ihr Paket droppen und danach zurück zum Startpunkt fliegen. Die Logdateien sind im Verzeichnis `data_and_logs` zu finden. Eine Beispielausführung der Simulation ist im unten aufgeführten Video dargestellt.
 
-https://github.com/WilkoLu/RoSiBa/assets/56156680/6e03eef0-fa98-49b5-bfa5-a884b5eab088
+
+https://github.com/WilkoLu/RoSiBa/assets/56156680/80c29adb-f74d-4a3d-9a76-72967226575d
+
   
 ## Einleitung
 
@@ -32,7 +34,7 @@ Dieses Projekt wurde mithilfe der [Live Share Extension](https://learn.microsoft
 
 Das hier umgesetzte Robotik-Simulationssystem mit Bash verfolgt die Idee einer Drohne, die Pakete an Zielpunkte liefert und danach wieder zu ihrem Ausgangspunkt zurückfliegt. Der Systementwurf ist in der folgenden Abbildung dargestellt: 
 
-![Systementwurf drawio](https://github.com/WilkoLu/RoSiBa/assets/56156680/69f526e9-f327-4abb-9692-156f53a1b51a)
+![Systementwurf drawio](https://github.com/WilkoLu/RoSiBa/assets/56156680/7ce67eaf-9ee6-4d7f-8ec4-3a5f8cb7b67e)
 
 Hierin ist zu erkennen, dass es einen Tower gibt, welcher die Aufgabe verfolgt, alle Prozesse zu starten und zu überwachen. Im System selbst ist der Controller die wichtigste Instanz. Er ist der Vermittler zwischen Sensoren und Aktoren und verwaltet die Zielposition und erstellt den Shared Memory, sowie die Message Queues. Die Drohne hat drei Sensoren, die ihre Daten an den Controller senden. Der GPS-Sensor misst die Position der Drohne, der Surroundingsensor überwacht die Umgebung, um die Drohne herum und der Packagesensor misst, ob die Drohne gerade ein Paket trägt oder nicht. Entsprechend der Messwerte der Sensoren sendet der Controller Befehle an die Aktuatoren. Hier gibt es den Motor (Engine), welcher die dafür sorgt, dass die Drohne sich in die richtige Richtung bewegt und den Dropper, welcher das Paket fallen lässt, falls er das Kommando dafür erhält. Die Kommunikation zwischen Sensoren, Controller und Aktuatoren erfolgt über Nachrichtenwarteschlangen (Message Queues). Darüber hinaus gibt es einen Shared Memory zur Verwaltung der Daten, der gleichzeitig die Realität abbilden soll. Der Dropper schreibt die `drop data`, also ob er gedroppt in diesen, während die Engine die aktuelle GPS-Position hineinschreibt. Aus dem Shared Memory lesen die jeweiligen Sensoren die Informationen über die Pakete, die Umgebung und die GPS-Position.   
 
