@@ -12,6 +12,7 @@ Zum Ausführen des Codes wird die Bibliothek `ncurses` benötigt. Diese wird mit
 ```sh
 sudo apt-get install libncurses5-dev libncursesw5-dev
 ```
+Die folgenden Befehle sind im directory `Source` durchzuführen.
 Alle C-Files werden durch das Ausführen des Bash-Skriptes compileAll.sh mit
 ```sh
 bash  compileAll.sh
