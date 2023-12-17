@@ -21,6 +21,11 @@ Dieses Projekt wurde mithilfe der [Live Share Extension](https://learn.microsoft
 
 ## Prozessimplementierung
 
+Für jeden der Sensoren im Systementwurf ist eine C-File vorhanden. Somit sind ein GPS-Sensor für die Position, ein Package-Sensor zum Überprüfen des Status des Tragens eines Paketes und ein Surrounding-Sensor für das Überprüfen der Umgebung der Drohne vorhanden. Darüber hinaus gibt es einen Controller, einen Tower und das allgemeine Robotic System. Die Aktuatoren sind durch die Engine und den Dropper gegeben.
+
+### GPS-Sensor
+### Package-Sensor
+### Surrounding-Sensor
 
 ## Nutzung der Interprozesskommunikation
 
