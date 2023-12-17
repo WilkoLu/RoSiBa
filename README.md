@@ -68,6 +68,24 @@ Die File Dropper.c implementiert die Hauptlogik eines Droppers, der auf Steuerbe
 
 ## Nutzung der Interprozesskommunikation
 
+In diesem Projekt wird die Interprozesskommunikation verwendet, um eine effiziente Kommunikation zwischen den verschiedenen Prozessen zu ermöglichen. Interprozesskommunikation ist entscheidend, um Daten zwischen den einzelnen Komponenten des Robotiksystems auszutauschen, Steuerbefehle zu übermitteln und den aktuellen Zustand des Systems zu synchronisieren. Folgende Methoden wurden dafür in diesem Projekt verwendet.
+
+**Message Queues:**
+   - **Erstellung von Message Queues:** Die Funktionen `createMessageQueue` und `getMessageQueue` in der `RoboticSystem.c` ermöglichen die Erstellung und den Zugriff auf Message Queues. Diese Message Queues dienen als Kommunikationsmittel zwischen verschiedenen Prozessen, um Nachrichten auszutauschen.
+   - **Nachrichten senden und empfangen:** In den Sensorprozessen, genauer dem `GPSSensor.c`, `PackageSensor.c` und `Surroundingsensor.c`, werden Message Queues verwendet, um Positionsdaten, Paketinformationen und Umgebungsinformationen zu senden. Die Funktionen `send_message`, `send_package_message` und `sendSurroundingmessage` senden Nachrichten an die entsprechenden Message Queues. Auf der anderen Seite empfängt die `receiveDirectionMessage`-Funktion in der `Engine.c` Steuerbefehle über die Message Queue.
+
+ **Shared Memory:**
+   - **Erstellung und Zugriff auf Shared Memory:** Die Funktionen `createShm` und `getShm` in der `RoboticSystem.c` ermöglichen die Erstellung und den Zugriff auf Shared Memory. Shared Memory wird verwendet, um Daten zwischen verschiedenen Prozessen zu teilen.
+   - **Aktualisierung von Shared Memory:** In den Prozessen wie der `Engine.c` und dem `Dropper.c` wird Shared Memory verwendet, um den aktuellen Zustand des Roboters zu speichern. Die Position des Roboters wird im Shared Memory aktualisiert, um sicherzustellen, dass alle Prozesse auf die gleichen Positionsdaten zugreifen.
+
+**Protokollierung und Log-Einträge:**
+   - **Log-Einträge erstellen:** In den Sensorprozessen und der Engine werden Log-Einträge erstellt, um Aktionen und Informationen zu protokollieren. Diese Log-Einträge werden oft in Message Queues gesendet und von anderen Prozessen empfangen. Die `logMessageFromPosition`-Funktion in `GPSSensor.c` ist ein Beispiel dafür.
+
+**Überwachung und Neustart von Prozessen:**
+   - **Prozessüberwachung durch das Tower-Skript:** Das Tower-Skript verwendet `pgrep`, um Prozesse zu überwachen. Falls ein Prozess nicht läuft, wird er mithilfe von `start_process` neu gestartet. Dieser Neustart wird durch die Verwendung von Message Queues und Shared Memory koordiniert, um sicherzustellen, dass der Systemzustand konsistent bleibt.
+
+Insgesamt ermöglicht die kombinierte Nutzung von Message Queues und Shared Memory eine effiziente und synchronisierte Kommunikation zwischen den verschiedenen Komponenten des Robotic Systems. Die Message Queues dienen dabei als Kanäle für den Austausch von Daten und Steuerbefehlen, während der Shared Memory als gemeinsamer Speicher für wichtige Systemzustände fungiert. Diese Art der Interprozesskommunikation trägt dazu bei, die Komponenten des Robotiksystems zu koppeln und eine reibungslose Zusammenarbeit zu gewährleisten.
+
 ## Logging und Datensicherung
 
 Das Logging erfolgt über die 'Logging.c'. Dieses Programm besteht aus zwei Funktionen: 'ensureDirectoryExists' und 'writeToLog'. Diese Funktionen dienen dazu, sicherzustellen, dass ein bestimmtes Verzeichnis existiert und um Nachrichten in eine Logdatei zu schreiben. Die Funktion 'ensureDirectoryExists' überprüft, ob das Verzeichnis eines gegebenen Dateipfades für die Logdatei existiert. Wenn das Verzeichnis nicht existiert, wird versucht, es zu erstellen. Die Funktion verwendet ein temporäres Array tempPath, um den Dateipfad zu kopieren. Dann wird der Dateiname entfernt, um nur den Verzeichnispfad zu erhalten. Anschließend wird mit Hilfe der Funktion 'stat' überprüft, ob das Verzeichnis bereits existiert. Falls nicht, wird es mit der Funktion 'mkdir' erstellt. Die 'writeToLog' Funktion schreibt eine Nachricht in eine Logdatei. Sie ruft zuerst ensureDirectoryExists auf, um sicherzustellen, dass das Verzeichnis für die Logdatei vorhanden ist. Die Funktion öffnet die Logdatei im "Anhänge"-Modus ("a"), was bedeutet, dass neue Daten an das Ende der Datei angehängt werden. Falls die Datei nicht geöffnet werden kann, wird eine Fehlermeldung ausgegeben. Danach wird ein Zeitstempel hinzugefügt, der das aktuelle Datum und die aktuelle Uhrzeit repräsentiert. Die Funktion fprintf wird verwendet, um den Zeitstempel und die Nachricht in die Logdatei zu schreiben. Schließlich wird die Datei geschlossen. Eventuelle Fehlermeldungen werden mit perror auf der Konsole auszugeben.
