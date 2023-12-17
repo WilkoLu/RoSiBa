@@ -1,7 +1,7 @@
 # RoSiBa
 Entwicklung eines einfachen Robotik-Simulationssystems mit Bash
 
-Autoren: 
+Autoren - Gruppe C: 
 - Eike Rodenbäck
 - Wilko Lühring
 - Silas Köhnke
@@ -23,7 +23,13 @@ Dieses Projekt wurde mithilfe der [Live Share Extension](https://learn.microsoft
 
 Für jeden der Sensoren im Systementwurf ist eine C-File vorhanden. Somit sind ein GPS-Sensor für die Position, ein Package-Sensor zum Überprüfen des Status des Tragens eines Paketes und ein Surrounding-Sensor für das Überprüfen der Umgebung der Drohne vorhanden. Darüber hinaus gibt es einen Controller, einen Tower und das allgemeine Robotic System. Die Aktuatoren sind durch die Engine und den Dropper gegeben.
 
+### Robotic System
+
+Das Robotic System in RoboticSystem.c implementiert Funktionen für die Verwaltung von Message Queues und Shared Memory in einem Robotersteuerungssystem. Die Funktion 'directionToString' wandelt die Richtung (enum Direction) in einen String um. Es wird ein switch-Statement verwendet, um die verschiedenen Richtungen (UP, DOWN, RIGHT, LEFT) abzudecken. Wenn die Richtung nicht erkannt wird, wird "UNKNOWN" zurückgegeben. Die Funktion 'boolToString' konvertiert einen boolschen Wert in einen String ("true" oder "false"). Die Funktion 'createMessageQueue' erstellt eine Message Queue und gibt ihre ID zurück. Dabei wird 'msgget' verwendet, um eine Message Queue mit den angegebenen Flags zu erstellen. Bei Fehlern wird eine Fehlermeldung ausgegeben und das Programm wird mit exit(EXIT_FAILURE) beendet. Durch 'getMessageQueue' wird eine existierende Message Queue abgerufen und ihre ID zurückgegeben. Das 'msgget' wird mit dem Flag 0 verwendet, um auf eine bestehende Message Queue zuzugreifen. Bei Fehlern wird eine Fehlermeldung ausgegeben und das Programm wird mit exit(EXIT_FAILURE) beendet. Das Shared Memory wird durch die Funktion 'createShm' erstellt. Diese gibt einen Zeiger auf diesen Bereich zurück. Dann wird 'shmget' verwendet, um einen Shared Memory Bereich mit den angegebenen Flags zu erstellen. Bei Fehlern wird wieder eine Fehlermeldung ausgegeben und das Programm wird mit exit(EXIT_FAILURE) beendet. Anschließend wird 'shmat' verwendet, um den erstellten Shared Memory Bereich zu befestigen. Wenn dies fehlschlägt, wird wie in den anderen Fällen eine Fehlermeldung ausgegeben und das Programm wird beendet. Die Funktion 'getShm' ruft einen existierenden Shared Memory Bereich ab und gibt einen Zeiger auf diesen zurück. Auch diese Funktion wird mit dem Flag 0 verwendet, um auf einen existierenden Shared Memory Bereich zuzugreifen. Bei Fehlern wird auch an dieser Stelle eine Fehlermeldung ausgegeben und das Programm wird mit exit(EXIT_FAILURE) beendet. Dann wird wieder 'shmat' verwendet, um den existierenden Shared Memory Bereich zu befestigen. Wenn dies fehlschlägt, wird ebenfalls eine Fehlermeldung ausgegeben und das Programm wird beendet.
+
 ### Controller
+
+
 
 ### Tower
 
