@@ -1,10 +1,10 @@
 # RoSiBa - Entwicklung eines einfachen Robotik-Simulationssystems mit Bash
 
 Autoren - Gruppe C: 
-- Eike Rodenbäck
-- Wilko Lühring
-- Silas Köhnke
-- Timon Faß
+- [@Eike Rodenbaeck](https://github.com/EikeJoo)
+- [@Wilko Luehring](https://github.com/WilkoLu)
+- [@Silas Köhnke](https://github.com/Silas-K)
+- [@Timon Faß](https://github.com/TimonFass)
 
 ## Ausführung der Simulation
 
