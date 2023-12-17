@@ -52,9 +52,9 @@ Die Surroundingsensor.c implementiert die Hauptlogik eines Sensorprozesses, der 
 ## Ausführung
 
 Alle C-Files werden durch das Ausführen des Bash-Skriptes compileAll.sh mit
-'''
+```
 bash  compileAll.sh
-'''
+```
 kompiliert.
 
 
