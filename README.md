@@ -32,7 +32,7 @@ Dieses Projekt beschäftigt sich mit der Aufgabe, ein einfaches Robotik-Simulati
 
 ## Zusammenarbeit
 
-Dieses Projekt wurde mithilfe der [Live Share](https://learn.microsoft.com/en-us/visualstudio/liveshare/) [(Extension in Visual Studio Code)](https://marketplace.visualstudio.com/items?itemName=MS-vsliveshare.vsliveshare) entwickelt. Die Live Share Extension ermöglicht es Entwicklern, in Echtzeit zusammenzuarbeiten, Code zu teilen und gemeinsam an Projekten zu arbeiten. Die Commits für dieses Projekt wurden aktiv gemeinsam erstellt.
+Dieses Projekt wurde mithilfe der [Live Share](https://learn.microsoft.com/en-us/visualstudio/liveshare/) [Extension in Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=MS-vsliveshare.vsliveshare) entwickelt. Die Live Share Extension ermöglicht es Entwicklern, in Echtzeit zusammenzuarbeiten, Code zu teilen und gemeinsam an Projekten zu arbeiten. Die Commits für dieses Projekt wurden aktiv gemeinsam erstellt.
 
 ## Systementwurf
 
