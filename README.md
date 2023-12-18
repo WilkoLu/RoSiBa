@@ -1,4 +1,4 @@
-# RoSiBa - Entwicklung eines einfachen Robotik-Simulationssystems mit Bash
+# RoSiBa - Entwicklung eines einfachen Robotik-Simulationssystems mit Bash und C
 
 Autoren - Gruppe C: 
 - [@Eike Rodenbaeck](https://github.com/EikeJoo)
